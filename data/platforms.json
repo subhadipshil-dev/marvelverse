@@ -1,7 +1,7 @@
 [
-  { "name": "Disney+", "color": "#113CCF", "logo": "D+" },
-  { "name": "Netflix", "color": "#E50914", "logo": "N" },
-  { "name": "Prime Video", "color": "#00A8E1", "logo": "P" },
-  { "name": "JioHotstar", "color": "#0F1C3F", "logo": "JH" },
-  { "name": "Sony LIV", "color": "#FFCC00", "logo": "SL" }
+  { "name": "Disney+", "color": "#113CCF", "logo": "/logos/disneyplus.svg" },
+  { "name": "Netflix", "color": "#E50914", "logo": "/logos/netflix.svg" },
+  { "name": "Prime Video", "color": "#00A8E1", "logo": "/logos/primevideo.svg" },
+  { "name": "JioHotstar", "color": "#0F1C3F", "logo": "/logos/jiohotstar.svg" },
+  { "name": "Sony LIV", "color": "#FFCC00", "logo": "/logos/sonyliv.svg" }
 ]

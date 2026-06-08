@@ -12,9 +12,10 @@ import moviesData from '@/data/movies.json';
 import phasesData from '@/data/phases.json';
 import platformsData from '@/data/platforms.json';
 import { Movie } from '@/types/movie';
-import { MovieCard } from '@/components/MovieCard';
+import { TimelineItem } from '@/components/TimelineItem';
 import { MovieDrawer } from '@/components/MovieDrawer';
 import { ParticleField } from '@/components/ParticleField';
+import { PlatformLogo } from '@/components/PlatformLogo';
 import { cn } from '@/lib/utils';
 
 // Types
@@ -87,7 +88,7 @@ function HeroCarousel({ movies, onMovieSelect }: { movies: Movie[]; onMovieSelec
             <motion.div
               key={movie.id}
               className={cn(
-                "poster-3d absolute cursor-pointer overflow-hidden rounded-3xl border border-white/10",
+                "poster-3d absolute cursor-pointer overflow-hidden rounded-3xl border border-white/10 bg-[#0a0a0a]",
                 pos === 'center' && "center h-[300px] w-[210px] md:h-[360px] md:w-[250px]",
                 pos === 'left' && "left h-[250px] w-[175px] md:h-[300px] md:w-[205px]",
                 pos === 'right' && "right h-[250px] w-[175px] md:h-[300px] md:w-[205px]",
@@ -104,19 +105,22 @@ function HeroCarousel({ movies, onMovieSelect }: { movies: Movie[]; onMovieSelec
               }}
               whileHover={isCenter ? { scale: 1.01 } : {}}
             >
-              <img 
-                src={movie.thumbnail} 
-                alt={movie.title}
-                className="h-full w-full object-cover"
-                onError={(e) => {
-                  // graceful fallback styling
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/60 to-black/90" />
+              {/* Premium framed poster for 3D carousel */}
+              <div className="absolute inset-0 bg-[#050505]">
+                <div className="absolute inset-0 bg-[radial-gradient(#161618_0.6px,transparent_1px)] bg-[length:3.5px_3.5px] opacity-60" />
+                <div className="absolute inset-0 flex items-center justify-center p-2.5">
+                  <img 
+                    src={movie.thumbnail} 
+                    alt={movie.title}
+                    className="max-h-full max-w-full object-contain"
+                  />
+                </div>
+                <div className="absolute inset-0 rounded-3xl ring-1 ring-inset ring-white/[0.06]" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/40 to-black/70" />
+              </div>
               
               {isCenter && (
-                <div className="absolute bottom-0 left-0 right-0 p-5">
+                <div className="absolute bottom-0 left-0 right-0 z-10 p-5">
                   <div className="text-[11px] tracking-[2px] text-[#c5a46e]">{movie.phase} • {movie.timelineYear}</div>
                   <div className="mt-0.5 text-lg font-semibold leading-tight tracking-tight text-white">{movie.title}</div>
                 </div>
@@ -367,14 +371,22 @@ export default function MarvelverseTimeline() {
                 ))}
               </div>
 
-              {/* Platform */}
-              <select 
-                value={activePlatform} 
-                onChange={(e) => setActivePlatform(e.target.value)}
-                className="filter-chip appearance-none pr-8"
-              >
-                {PLATFORMS.map(p => <option key={p} value={p}>{p}</option>)}
-              </select>
+              {/* Platform — Real logos in chips */}
+              <div className="flex flex-wrap gap-1.5">
+                {PLATFORMS.map((platform) => (
+                  <button
+                    key={platform}
+                    onClick={() => setActivePlatform(platform)}
+                    className={cn(
+                      "filter-chip inline-flex items-center gap-1.5",
+                      activePlatform === platform && "active"
+                    )}
+                  >
+                    {platform !== "All" && <PlatformLogo name={platform} className="h-3 w-3" />}
+                    <span>{platform}</span>
+                  </button>
+                ))}
+              </div>
 
               {/* Min Rating */}
               <select 
@@ -494,29 +506,34 @@ export default function MarvelverseTimeline() {
 
           <div 
             onClick={() => openMovie(featuredMovie)}
-            className="group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#111] md:h-[280px] md:flex-row"
+            className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0a0a0a] md:flex-row"
           >
-            <div className="relative h-64 w-full overflow-hidden md:h-auto md:w-[42%]">
-              <img 
-                src={featuredMovie.thumbnail} 
-                alt={featuredMovie.title} 
-                className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.06]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent md:bg-gradient-to-r" />
-            </div>
-            <div className="flex flex-1 flex-col justify-center p-8 md:p-11">
-              <div className="mb-2 flex items-center gap-3">
-                <div className="text-xs text-[#c5a46e] tracking-widest">{featuredMovie.phase} — {featuredMovie.timelineYear}</div>
-                <div className="flex items-center gap-1 rounded bg-white/5 px-2 py-px text-xs text-[#c5a46e]">
-                  <Star className="h-3 w-3 fill-current" /> {featuredMovie.imdbRating}
-                </div>
+            {/* Portrait poster on the side for featured */}
+            <div className="relative w-full overflow-hidden bg-black md:w-[260px] lg:w-[280px]">
+              <div className="relative aspect-[2/3] w-full md:aspect-auto md:h-full">
+                <img 
+                  src={featuredMovie.thumbnail} 
+                  alt={featuredMovie.title} 
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                />
               </div>
-              <h3 className="text-4xl font-semibold tracking-[-1.6px]">{featuredMovie.title}</h3>
-              <p className="mt-3 max-w-xl text-[15px] text-white/70 line-clamp-3">{featuredMovie.synopsis}</p>
+            </div>
 
-              <div className="mt-6 flex gap-3">
-                <button onClick={(e) => { e.stopPropagation(); handleWatch(featuredMovie); }} className="btn btn-primary">WATCH NOW</button>
-                <button onClick={(e) => { e.stopPropagation(); handleDownload(featuredMovie); }} className="btn btn-download">DOWNLOAD</button>
+            <div className="flex flex-1 flex-col justify-center p-6 md:p-8">
+              <div className="mb-1 flex items-center gap-3 text-xs">
+                <div className="rounded-full bg-[#c8102e] px-2.5 py-px text-white tracking-wider">{featuredMovie.phase}</div>
+                <div className="text-[#c5a46e] flex items-center gap-1">
+                  <Star className="h-3.5 w-3.5 fill-current" /> {featuredMovie.imdbRating}
+                </div>
+                <div className="text-white/50">{featuredMovie.timelineYear}</div>
+              </div>
+
+              <h3 className="text-2xl font-semibold tracking-tight md:text-3xl">{featuredMovie.title}</h3>
+              <p className="mt-2 max-w-lg text-sm text-white/70 line-clamp-3">{featuredMovie.synopsis}</p>
+
+              <div className="mt-5 flex flex-wrap gap-3">
+                <button onClick={(e) => { e.stopPropagation(); handleWatch(featuredMovie); }} className="btn btn-primary text-sm px-6 py-2.5">WATCH NOW</button>
+                <button onClick={(e) => { e.stopPropagation(); handleDownload(featuredMovie); }} className="btn btn-download text-sm px-5 py-2.5">DOWNLOAD</button>
               </div>
             </div>
           </div>
@@ -540,58 +557,45 @@ export default function MarvelverseTimeline() {
         {/* Timeline Visual Progress Indicator */}
         <div className="mb-8 flex items-center gap-4 text-xs uppercase tracking-widest text-white/50">
           <div className="flex-1 h-px bg-white/10" />
-          <div>MCU CHRONOLOGY • {timelineProgress}% FILTERED</div>
+          <div>MCU CHRONOLOGY • {filteredMovies.length} FILMS</div>
           <div className="flex-1 h-px bg-white/10" />
         </div>
 
-        {/* THE BEAUTIFUL VERTICAL TIMELINE */}
-        <div className="relative pl-12 md:pl-16">
-          {/* Glowing animated timeline line */}
+        {/* HORIZONTAL PREMIUM TIMELINE BLOCKS */}
+        <div className="relative pl-10 md:pl-14">
+          {/* Glowing vertical timeline line */}
           <div className="timeline-line" />
           <div 
-            className="absolute left-[31px] top-0 z-10 w-[2px] bg-gradient-to-b from-[#c8102e] via-[#e11d48] to-transparent transition-all duration-700" 
-            style={{ height: `${Math.max(14, Math.min(96, timelineProgress))}%` }} 
+            className="absolute left-[39px] top-0 z-10 w-[2px] bg-gradient-to-b from-[#c8102e]/30 via-[#c8102e] to-transparent transition-all duration-700" 
+            style={{ height: `${Math.max(12, Math.min(94, timelineProgress))}%` }} 
           />
-          <div className="timeline-pulse" style={{ top: `${Math.max(5, Math.min(88, timelineProgress - 3))}%` }} />
+          <div className="timeline-pulse" style={{ top: `${Math.max(4, Math.min(86, timelineProgress - 4))}%` }} />
 
-          {/* Year markers + cards */}
-          <div className="space-y-14">
+          <div className="space-y-8">
             {filteredMovies.map((movie, index) => {
               const prevYear = index > 0 ? filteredMovies[index - 1].timelineYear : null;
               const showYearMarker = prevYear === null || prevYear !== movie.timelineYear;
 
               return (
                 <div key={movie.id} className="relative">
-                  {/* Year marker on the timeline */}
+                  {/* Year Marker aligned to the left of the block */}
                   {showYearMarker && (
-                    <div className="absolute -left-[52px] top-4 z-20 md:-left-[60px]">
-                      <div className="flex items-center gap-2">
-                        <div className="rounded bg-[#c8102e] px-3 py-px text-xs font-semibold tracking-widest text-white shadow">
-                          {movie.timelineYear}
-                        </div>
-                        <div className="h-px w-5 bg-white/30" />
+                    <div className="absolute -left-10 top-3 z-20 flex items-center gap-3 md:-left-14">
+                      <div className="rounded-full bg-[#c8102e] px-3.5 py-1 text-xs font-semibold tracking-[1.5px] text-white shadow-md">
+                        {movie.timelineYear}
                       </div>
+                      <div className="hidden h-px w-6 bg-white/20 md:block" />
                     </div>
                   )}
 
-                  {/* Connected movie card row */}
-                  <div className="grid grid-cols-1 gap-x-9 gap-y-5 lg:grid-cols-12">
-                    <div className="hidden items-start pt-1.5 lg:col-span-3 lg:flex">
-                      <div>
-                        <div className="text-sm font-medium text-white/90">{movie.phase}</div>
-                        <div className="text-[10px] text-white/50">RELEASED {movie.releaseYear}</div>
-                      </div>
-                    </div>
-
-                    <div className="lg:col-span-9">
-                      <MovieCard
-                        movie={movie}
-                        onDetails={openMovie}
-                        onWatch={handleWatch}
-                        onDownload={handleDownload}
-                        index={index}
-                      />
-                    </div>
+                  {/* Horizontal content block - wide, premium, Netflix-style */}
+                  <div className="ml-2 md:ml-4">
+                    <TimelineItem
+                      movie={movie}
+                      onDetails={openMovie}
+                      onWatch={handleWatch}
+                      onDownload={handleDownload}
+                    />
                   </div>
                 </div>
               );
@@ -653,10 +657,15 @@ export default function MarvelverseTimeline() {
                 setActivePlatform(platform.name);
                 document.getElementById('timeline')?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="platform-badge cursor-pointer px-6 py-3 text-base font-medium hover:border-[#c8102e]/50 hover:text-white transition-all active:scale-[0.985]"
-              style={{ background: `${platform.color}10`, borderColor: `${platform.color}30` }}
+              className="inline-flex cursor-pointer items-center gap-2.5 rounded-full border px-5 py-2.5 text-sm font-medium transition-all hover:border-[#c8102e]/50 hover:text-white active:scale-[0.985]"
+              style={{ 
+                background: `${platform.color}10`, 
+                borderColor: `${platform.color}30`,
+                color: 'white'
+              }}
             >
-              <span className="font-mono text-sm opacity-70 mr-1.5">{platform.logo}</span> {platform.name}
+              <PlatformLogo name={platform.name} className="h-4 w-4" />
+              {platform.name}
             </div>
           ))}
         </div>

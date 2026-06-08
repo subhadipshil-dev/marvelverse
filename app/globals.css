@@ -201,19 +201,93 @@ body {
   box-shadow: var(--shadow-medium), var(--shadow-glow-red);
 }
 
-.movie-card .poster-container {
+/* ============================================
+   PREMIUM MOVIE CARD + POSTER FRAME SYSTEM
+   ============================================ */
+
+/* Main card container */
+.movie-card {
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.movie-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 70px -15px rgb(0 0 0 / 0.75);
+  transform: translateY(-6px);
+}
+
+/* The poster frame is the star of the card.
+   Handled primarily in Poster.tsx for consistency across the site.
+   These are supporting styles. */
+.poster-frame {
   position: relative;
+  background: #070707;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 40px -15px rgb(0 0 0 / 0.8);
   overflow: hidden;
 }
 
-.movie-card .poster-container img,
-.movie-card .poster-container .poster-fallback {
-  transition: transform 700ms cubic-bezier(0.23, 1.0, 0.32, 1);
+/* Subtle red glow on poster frame hover (applied via group in some contexts) */
+.group:hover .poster-frame,
+.group\/poster-frame:hover {
+  box-shadow: 0 10px 40px -15px rgb(0 0 0 / 0.8), 0 0 0 1px rgba(200, 16, 46, 0.15);
 }
 
-.movie-card:hover .poster-container img,
-.movie-card:hover .poster-container .poster-fallback {
-  transform: scale(1.08);
+/* Refined filter chips */
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  background: #111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  color: #a1a1aa;
+  transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+
+.filter-chip:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #f5f5f5;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.filter-chip.active {
+  background: #c8102e;
+  border-color: #c8102e;
+  color: white;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.1);
+}
+
+/* Platform logo badges in cards */
+.platform-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 10px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(245,245,245,0.75);
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+.platform-badge img {
+  width: 12px;
+  height: 12px;
+  object-fit: contain;
 }
 
 /* Light sweep effect on card */

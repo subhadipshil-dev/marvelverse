@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { Movie } from '@/types/movie';
 import { Poster } from './Poster';
+import { PlatformLogo } from './PlatformLogo';
 import { toast } from 'sonner';
 
 interface MovieDrawerProps {
@@ -118,14 +119,14 @@ export function MovieDrawer({ movie, isOpen, onClose }: MovieDrawerProps) {
                 <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-[#050505]/90 to-[#050505]" />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/70" />
 
-                {/* Large poster + info */}
+                {/* Large poster + info - premium framed poster (matches card style) */}
                 <div className="absolute inset-0 flex flex-col justify-end p-6 lg:flex-row lg:items-end lg:justify-start lg:gap-8 lg:p-9">
-                  <div className="relative z-10 w-[138px] flex-shrink-0 overflow-hidden rounded-2xl border border-white/10 shadow-2xl lg:w-[210px]">
+                  <div className="relative z-10 w-[142px] flex-shrink-0 lg:w-[230px]">
                     <Poster 
                       src={movie.thumbnail} 
                       alt={movie.title} 
-                      size="xl"
-                      priority
+                      priority 
+                      className="shadow-2xl" 
                     />
                   </div>
 
@@ -251,13 +252,14 @@ export function MovieDrawer({ movie, isOpen, onClose }: MovieDrawerProps) {
 
                         <div className="h-px bg-white/10" />
 
-                        {/* Platforms */}
+                        {/* Platforms - Real logos */}
                         <div>
                           <div className="mb-2.5 text-[10px] uppercase tracking-[2.5px] text-white/50">STREAMING ON</div>
                           <div className="flex flex-wrap gap-2">
                             {movie.ottPlatforms.map((p, i) => (
-                              <div key={i} className="platform-badge font-medium text-xs py-1 px-3.5">
-                                {p}
+                              <div key={i} className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs">
+                                <PlatformLogo name={p} className="h-3.5 w-3.5" />
+                                <span className="font-medium text-white/80">{p}</span>
                               </div>
                             ))}
                           </div>
