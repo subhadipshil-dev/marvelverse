@@ -1,0 +1,7 @@
+[
+  { "name": "Phase 1", "color": "#c8102e", "movies": 6 },
+  { "name": "Phase 2", "color": "#e11d48", "movies": 6 },
+  { "name": "Phase 3", "color": "#f43f5e", "movies": 11 },
+  { "name": "Phase 4", "color": "#fb7185", "movies": 7 },
+  { "name": "Phase 5", "color": "#fda4af", "movies": 4 }
+]

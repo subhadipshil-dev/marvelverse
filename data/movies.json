@@ -1,0 +1,838 @@
+[
+  {
+    "id": "captain-america-first-avenger",
+    "title": "Captain America: The First Avenger",
+    "thumbnail": "/posters/captain_america_the_first_avenger_ver2.jpg",
+    "timelineYear": 1943,
+    "releaseYear": 2011,
+    "phase": "Phase 1",
+    "runtime": "124 min",
+    "imdbRating": 6.9,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Chris Evans",
+      "Hayley Atwell",
+      "Sebastian Stan",
+      "Tommy Lee Jones"
+    ],
+    "synopsis": "Steve Rogers, a rejected military soldier, transforms into Captain America after taking a dose of a 'Super-Soldier serum'. But being Captain America comes at a price as he attempts to take down a war monger and a terrorist organization.",
+    "orderIndex": 1
+  },
+  {
+    "id": "captain-marvel",
+    "title": "Captain Marvel",
+    "thumbnail": "/posters/captain_marvel_ver2.jpg",
+    "timelineYear": 1995,
+    "releaseYear": 2019,
+    "phase": "Phase 3",
+    "runtime": "125 min",
+    "imdbRating": 6.8,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Brie Larson",
+      "Samuel L. Jackson",
+      "Ben Mendelsohn",
+      "Jude Law"
+    ],
+    "synopsis": "Carol Danvers becomes one of the universe's most powerful heroes when Earth is caught in the middle of a galactic war between two alien races.",
+    "orderIndex": 2
+  },
+  {
+    "id": "iron-man",
+    "title": "Iron Man",
+    "thumbnail": "/posters/iron_man_ver3.jpg",
+    "timelineYear": 2008,
+    "releaseYear": 2008,
+    "phase": "Phase 1",
+    "runtime": "126 min",
+    "imdbRating": 7.9,
+    "ottPlatforms": [
+      "Disney+",
+      "Netflix"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Robert Downey Jr.",
+      "Terrence Howard",
+      "Jeff Bridges",
+      "Gwyneth Paltrow"
+    ],
+    "synopsis": "After being held captive in an Afghan cave, billionaire engineer Tony Stark creates a unique weaponized suit of armor to fight evil.",
+    "orderIndex": 3
+  },
+  {
+    "id": "iron-man-2",
+    "title": "Iron Man 2",
+    "thumbnail": "/posters/iron_man_two_ver7.jpg",
+    "timelineYear": 2010,
+    "releaseYear": 2010,
+    "phase": "Phase 1",
+    "runtime": "125 min",
+    "imdbRating": 7,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Robert Downey Jr.",
+      "Mickey Rourke",
+      "Gwyneth Paltrow",
+      "Don Cheadle"
+    ],
+    "synopsis": "With the world now aware of his identity as Iron Man, Tony Stark must contend with both his declining health and a vengeful mad man with ties to his father's legacy.",
+    "orderIndex": 4
+  },
+  {
+    "id": "the-incredible-hulk",
+    "title": "The Incredible Hulk",
+    "thumbnail": "/posters/incredible_hulk.jpg",
+    "timelineYear": 2010,
+    "releaseYear": 2008,
+    "phase": "Phase 1",
+    "runtime": "112 min",
+    "imdbRating": 6.6,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Edward Norton",
+      "Liv Tyler",
+      "Tim Roth",
+      "William Hurt"
+    ],
+    "synopsis": "Bruce Banner, a scientist on the run from the U.S. Government, must find a cure for the monster he turns into whenever he loses his temper.",
+    "orderIndex": 5
+  },
+  {
+    "id": "thor",
+    "title": "Thor",
+    "thumbnail": "/posters/thor_ver5.jpg",
+    "timelineYear": 2011,
+    "releaseYear": 2011,
+    "phase": "Phase 1",
+    "runtime": "115 min",
+    "imdbRating": 7,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Chris Hemsworth",
+      "Natalie Portman",
+      "Tom Hiddleston",
+      "Anthony Hopkins"
+    ],
+    "synopsis": "The powerful but arrogant god Thor is cast out of Asgard to live amongst humans in Midgard (Earth), where he soon becomes one of their finest defenders.",
+    "orderIndex": 6
+  },
+  {
+    "id": "the-avengers",
+    "title": "The Avengers",
+    "thumbnail": "/posters/avengers_ver14.jpg",
+    "timelineYear": 2012,
+    "releaseYear": 2012,
+    "phase": "Phase 1",
+    "runtime": "143 min",
+    "imdbRating": 8,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Robert Downey Jr.",
+      "Chris Evans",
+      "Mark Ruffalo",
+      "Chris Hemsworth",
+      "Scarlett Johansson"
+    ],
+    "synopsis": "Earth's mightiest heroes must come together and learn to fight as a team if they are going to stop the mischievous Loki and his alien army from enslaving humanity.",
+    "orderIndex": 7
+  },
+  {
+    "id": "iron-man-3",
+    "title": "Iron Man 3",
+    "thumbnail": "/posters/iron_man_three_ver7.jpg",
+    "timelineYear": 2012,
+    "releaseYear": 2013,
+    "phase": "Phase 2",
+    "runtime": "130 min",
+    "imdbRating": 7.1,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Robert Downey Jr.",
+      "Gwyneth Paltrow",
+      "Don Cheadle",
+      "Guy Pearce"
+    ],
+    "synopsis": "When Tony Stark's world is torn apart by a formidable terrorist called the Mandarin, he starts an odyssey of rebuilding and retribution.",
+    "orderIndex": 8
+  },
+  {
+    "id": "thor-dark-world",
+    "title": "Thor: The Dark World",
+    "thumbnail": "/posters/thor_the_dark_world_ver2.jpg",
+    "timelineYear": 2013,
+    "releaseYear": 2013,
+    "phase": "Phase 2",
+    "runtime": "112 min",
+    "imdbRating": 6.8,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Chris Hemsworth",
+      "Natalie Portman",
+      "Tom Hiddleston",
+      "Anthony Hopkins"
+    ],
+    "synopsis": "When the Dark Elves attempt to plunge the universe into darkness, Thor must embark on a perilous and personal journey that will reunite him with Jane Foster.",
+    "orderIndex": 9
+  },
+  {
+    "id": "captain-america-winter-soldier",
+    "title": "Captain America: The Winter Soldier",
+    "thumbnail": "/posters/captain_america_the_winter_soldier_ver7.jpg",
+    "timelineYear": 2014,
+    "releaseYear": 2014,
+    "phase": "Phase 2",
+    "runtime": "136 min",
+    "imdbRating": 7.7,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Chris Evans",
+      "Scarlett Johansson",
+      "Sebastian Stan",
+      "Samuel L. Jackson"
+    ],
+    "synopsis": "As Steve Rogers struggles to embrace his role in the modern world, he teams up with a fellow Avenger and S.H.I.E.L.D agent, Black Widow, to battle a new threat from history: an assassin known as the Winter Soldier.",
+    "orderIndex": 10
+  },
+  {
+    "id": "guardians-of-the-galaxy",
+    "title": "Guardians of the Galaxy",
+    "thumbnail": "/posters/guardians_of_the_galaxy_ver2.jpg",
+    "timelineYear": 2014,
+    "releaseYear": 2014,
+    "phase": "Phase 2",
+    "runtime": "121 min",
+    "imdbRating": 8,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Chris Pratt",
+      "Zoe Saldana",
+      "Dave Bautista",
+      "Vin Diesel",
+      "Bradley Cooper"
+    ],
+    "synopsis": "A group of intergalactic criminals must pull together to stop a fanatical warrior from taking control of the universe.",
+    "orderIndex": 11
+  },
+  {
+    "id": "guardians-of-the-galaxy-vol-2",
+    "title": "Guardians of the Galaxy Vol. 2",
+    "thumbnail": "/posters/guardians_of_the_galaxy_vol_two_ver4.jpg",
+    "timelineYear": 2014,
+    "releaseYear": 2017,
+    "phase": "Phase 3",
+    "runtime": "137 min",
+    "imdbRating": 7.6,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Chris Pratt",
+      "Zoe Saldana",
+      "Dave Bautista",
+      "Vin Diesel",
+      "Bradley Cooper",
+      "Kurt Russell"
+    ],
+    "synopsis": "The Guardians must fight to keep their newfound family together as they unravel the mystery of Peter Quill true parentage.",
+    "orderIndex": 12
+  },
+  {
+    "id": "avengers-age-of-ultron",
+    "title": "Avengers: Age of Ultron",
+    "thumbnail": "/posters/avengers_age_of_ultron_ver11.jpg",
+    "timelineYear": 2015,
+    "releaseYear": 2015,
+    "phase": "Phase 2",
+    "runtime": "141 min",
+    "imdbRating": 7.3,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Robert Downey Jr.",
+      "Chris Evans",
+      "Mark Ruffalo",
+      "Chris Hemsworth",
+      "Scarlett Johansson"
+    ],
+    "synopsis": "When Tony Stark and Bruce Banner try to jump-start a dormant peacekeeping program called Ultron, things go horribly wrong and it's up to Earth's mightiest heroes to stop the villainous Ultron from enacting his terrible plan.",
+    "orderIndex": 13
+  },
+  {
+    "id": "ant-man",
+    "title": "Ant-Man",
+    "thumbnail": "/posters/ant_man_ver3.jpg",
+    "timelineYear": 2015,
+    "releaseYear": 2015,
+    "phase": "Phase 2",
+    "runtime": "117 min",
+    "imdbRating": 7.3,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Paul Rudd",
+      "Michael Douglas",
+      "Evangeline Lilly",
+      "Corey Stoll"
+    ],
+    "synopsis": "Armed with a super-suit with the astonishing ability to shrink in scale but increase in strength, cat burglar Scott Lang must embrace his inner hero and help his mentor, Dr. Hank Pym, plan and pull off a heist that will save the world.",
+    "orderIndex": 14
+  },
+  {
+    "id": "captain-america-civil-war",
+    "title": "Captain America: Civil War",
+    "thumbnail": "/posters/captain_america_civil_war_ver15.jpg",
+    "timelineYear": 2016,
+    "releaseYear": 2016,
+    "phase": "Phase 3",
+    "runtime": "147 min",
+    "imdbRating": 7.8,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Chris Evans",
+      "Robert Downey Jr.",
+      "Scarlett Johansson",
+      "Sebastian Stan",
+      "Tom Holland"
+    ],
+    "synopsis": "Political involvement in the Avengers' affairs causes a rift between Captain America and Iron Man.",
+    "orderIndex": 15
+  },
+  {
+    "id": "black-widow",
+    "title": "Black Widow",
+    "thumbnail": "/posters/black_widow_ver9.jpg",
+    "timelineYear": 2016,
+    "releaseYear": 2021,
+    "phase": "Phase 4",
+    "runtime": "134 min",
+    "imdbRating": 6.7,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Scarlett Johansson",
+      "Florence Pugh",
+      "David Harbour",
+      "Rachel Weisz"
+    ],
+    "synopsis": "Natasha Romanoff, aka Black Widow, confronts the darker parts of her ledger when a dangerous conspiracy with ties to her past arises.",
+    "orderIndex": 16
+  },
+  {
+    "id": "doctor-strange",
+    "title": "Doctor Strange",
+    "thumbnail": "/posters/doctor_strange_ver3.jpg",
+    "timelineYear": 2016,
+    "releaseYear": 2016,
+    "phase": "Phase 3",
+    "runtime": "115 min",
+    "imdbRating": 7.5,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Benedict Cumberbatch",
+      "Chiwetel Ejiofor",
+      "Rachel McAdams",
+      "Tilda Swinton"
+    ],
+    "synopsis": "While on a journey of physical and spiritual healing, a brilliant neurosurgeon is drawn into the world of the mystic arts.",
+    "orderIndex": 17
+  },
+  {
+    "id": "black-panther",
+    "title": "Black Panther",
+    "thumbnail": "/posters/black_panther_ver3.jpg",
+    "timelineYear": 2016,
+    "releaseYear": 2018,
+    "phase": "Phase 3",
+    "runtime": "134 min",
+    "imdbRating": 7.3,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Chadwick Boseman",
+      "Michael B. Jordan",
+      "Lupita Nyong'o",
+      "Danai Gurira"
+    ],
+    "synopsis": "T'Challa, heir to the hidden but advanced kingdom of Wakanda, must step forward to lead his people into a new future and must confront a challenger from his country's past.",
+    "orderIndex": 18
+  },
+  {
+    "id": "spider-man-homecoming",
+    "title": "Spider-Man: Homecoming",
+    "thumbnail": "/posters/spiderman_homecoming.jpg",
+    "timelineYear": 2016,
+    "releaseYear": 2017,
+    "phase": "Phase 3",
+    "runtime": "133 min",
+    "imdbRating": 7.4,
+    "ottPlatforms": [
+      "Disney+",
+      "Sony LIV"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Tom Holland",
+      "Michael Keaton",
+      "Robert Downey Jr.",
+      "Zendaya"
+    ],
+    "synopsis": "Peter Parker balances his life as an ordinary high school student in Queens with his superhero alter-ego Spider-Man, and finds himself on the trail of a new menace prowling the skies of New York City.",
+    "orderIndex": 19
+  },
+  {
+    "id": "thor-ragnarok",
+    "title": "Thor: Ragnarok",
+    "thumbnail": "/posters/thor_ragnarok_ver2.jpg",
+    "timelineYear": 2017,
+    "releaseYear": 2017,
+    "phase": "Phase 3",
+    "runtime": "130 min",
+    "imdbRating": 7.9,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Chris Hemsworth",
+      "Tom Hiddleston",
+      "Cate Blanchett",
+      "Mark Ruffalo",
+      "Tessa Thompson"
+    ],
+    "synopsis": "Thor is imprisoned on the planet Sakaar, and must race against time to return to Asgard and stop Ragnarök, the destruction of his world, at the hands of the powerful and ruthless villain Hela.",
+    "orderIndex": 20
+  },
+  {
+    "id": "black-panther-wakanda-forever",
+    "title": "Black Panther: Wakanda Forever",
+    "thumbnail": "/posters/black_panther_wakanda_forever_ver2.jpg",
+    "timelineYear": 2018,
+    "releaseYear": 2022,
+    "phase": "Phase 4",
+    "runtime": "161 min",
+    "imdbRating": 6.7,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Letitia Wright",
+      "Lupita Nyong'o",
+      "Danai Gurira",
+      "Winston Duke",
+      "Tenoch Huerta"
+    ],
+    "synopsis": "The people of Wakanda fight to protect their home from intervening world powers as they mourn the death of King T'Challa.",
+    "orderIndex": 21
+  },
+  {
+    "id": "avengers-infinity-war",
+    "title": "Avengers: Infinity War",
+    "thumbnail": "/posters/avengers_infinity_war_ver2.jpg",
+    "timelineYear": 2018,
+    "releaseYear": 2018,
+    "phase": "Phase 3",
+    "runtime": "149 min",
+    "imdbRating": 8.4,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Robert Downey Jr.",
+      "Chris Hemsworth",
+      "Mark Ruffalo",
+      "Chris Evans",
+      "Scarlett Johansson",
+      "Josh Brolin"
+    ],
+    "synopsis": "The Avengers and their Super Hero allies must be willing to sacrifice all in an attempt to defeat the powerful Thanos before his blitz of devastation and ruin puts an end to the universe.",
+    "orderIndex": 22
+  },
+  {
+    "id": "ant-man-and-the-wasp",
+    "title": "Ant-Man and the Wasp",
+    "thumbnail": "/posters/antman_and_the_wasp_ver2.jpg",
+    "timelineYear": 2018,
+    "releaseYear": 2018,
+    "phase": "Phase 3",
+    "runtime": "118 min",
+    "imdbRating": 7,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Paul Rudd",
+      "Evangeline Lilly",
+      "Michael Peña",
+      "Walton Goggins"
+    ],
+    "synopsis": "As Scott Lang balances being both a Super Hero and a father, Hope van Dyne and Dr. Hank Pym present an urgent new mission that finds the Ant-Man fighting alongside The Wasp to uncover secrets from their past.",
+    "orderIndex": 23
+  },
+  {
+    "id": "avengers-endgame",
+    "title": "Avengers: Endgame",
+    "thumbnail": "/posters/avengers_endgame_ver2.jpg",
+    "timelineYear": 2023,
+    "releaseYear": 2019,
+    "phase": "Phase 3",
+    "runtime": "181 min",
+    "imdbRating": 8.4,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Robert Downey Jr.",
+      "Chris Evans",
+      "Mark Ruffalo",
+      "Chris Hemsworth",
+      "Scarlett Johansson",
+      "Jeremy Renner"
+    ],
+    "synopsis": "After the devastating events of Avengers: Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos' actions and restore balance to the universe.",
+    "orderIndex": 24
+  },
+  {
+    "id": "spider-man-far-from-home",
+    "title": "Spider-Man: Far From Home",
+    "thumbnail": "/posters/spiderman_far_from_home_ver7.jpg",
+    "timelineYear": 2023,
+    "releaseYear": 2019,
+    "phase": "Phase 3",
+    "runtime": "129 min",
+    "imdbRating": 7.4,
+    "ottPlatforms": [
+      "Disney+",
+      "Sony LIV"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Tom Holland",
+      "Samuel L. Jackson",
+      "Zendaya",
+      "Jake Gyllenhaal"
+    ],
+    "synopsis": "Following the events of Avengers: Endgame, Spider-Man must step up to take on new threats in a world that has changed forever.",
+    "orderIndex": 25
+  },
+  {
+    "id": "spider-man-no-way-home",
+    "title": "Spider-Man: No Way Home",
+    "thumbnail": "/posters/spiderman_no_way_home_ver3.jpg",
+    "timelineYear": 2024,
+    "releaseYear": 2021,
+    "phase": "Phase 4",
+    "runtime": "148 min",
+    "imdbRating": 8.2,
+    "ottPlatforms": [
+      "Disney+",
+      "Sony LIV"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Tom Holland",
+      "Zendaya",
+      "Benedict Cumberbatch",
+      "Jacob Batalon",
+      "Willem Dafoe"
+    ],
+    "synopsis": "With Spider-Man's identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear.",
+    "orderIndex": 26
+  },
+  {
+    "id": "shang-chi",
+    "title": "Shang-Chi and the Legend of the Ten Rings",
+    "thumbnail": "/posters/shangchi_and_the_legend_of_the_ten_rings_ver2.jpg",
+    "timelineYear": 2024,
+    "releaseYear": 2021,
+    "phase": "Phase 4",
+    "runtime": "132 min",
+    "imdbRating": 7.4,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Simu Liu",
+      "Awkwafina",
+      "Tony Leung",
+      "Meng'er Zhang"
+    ],
+    "synopsis": "Shang-Chi, the master of weaponry-based Kung Fu, is forced to confront his past after being drawn into the Ten Rings organization.",
+    "orderIndex": 27
+  },
+  {
+    "id": "eternals",
+    "title": "Eternals",
+    "thumbnail": "/posters/eternals_ver3.jpg",
+    "timelineYear": 2024,
+    "releaseYear": 2021,
+    "phase": "Phase 4",
+    "runtime": "157 min",
+    "imdbRating": 6.3,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Gemma Chan",
+      "Richard Madden",
+      "Angelina Jolie",
+      "Salma Hayek",
+      "Kit Harington"
+    ],
+    "synopsis": "The saga of the Eternals, a race of immortal beings who lived on Earth and shaped its history and civilizations.",
+    "orderIndex": 28
+  },
+  {
+    "id": "doctor-strange-multiverse",
+    "title": "Doctor Strange in the Multiverse of Madness",
+    "thumbnail": "/posters/doctor_strange_in_the_multiverse_of_madness_ver5.jpg",
+    "timelineYear": 2025,
+    "releaseYear": 2022,
+    "phase": "Phase 4",
+    "runtime": "126 min",
+    "imdbRating": 6.9,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Benedict Cumberbatch",
+      "Elizabeth Olsen",
+      "Chiwetel Ejiofor",
+      "Benedict Wong"
+    ],
+    "synopsis": "Doctor Strange teams up with a mysterious teenage girl from his dreams who can travel across multiverses, to battle other-universe versions of himself which threaten to wipe out the multiverse.",
+    "orderIndex": 29
+  },
+  {
+    "id": "thor-love-and-thunder",
+    "title": "Thor: Love and Thunder",
+    "thumbnail": "/posters/thor_love_and_thunder_ver3.jpg",
+    "timelineYear": 2025,
+    "releaseYear": 2022,
+    "phase": "Phase 4",
+    "runtime": "119 min",
+    "imdbRating": 6.2,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Chris Hemsworth",
+      "Natalie Portman",
+      "Christian Bale",
+      "Tessa Thompson"
+    ],
+    "synopsis": "Thor enlists the help of Valkyrie, Korg and ex-girlfriend Jane Foster to fight Gorr the God Butcher, who intends to make the gods extinct.",
+    "orderIndex": 30
+  },
+  {
+    "id": "ant-man-quantumania",
+    "title": "Ant-Man and the Wasp: Quantumania",
+    "thumbnail": "/posters/antman_and_the_wasp_quantumania_ver2.jpg",
+    "timelineYear": 2026,
+    "releaseYear": 2023,
+    "phase": "Phase 5",
+    "runtime": "125 min",
+    "imdbRating": 6.1,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Paul Rudd",
+      "Evangeline Lilly",
+      "Jonathan Majors",
+      "Michelle Pfeiffer"
+    ],
+    "synopsis": "Scott Lang and Hope Van Dyne, along with Hank Pym and Janet Van Dyne, explore the Quantum Realm, where they interact with strange new creatures and embark on an adventure that will push them beyond the limits of what they thought was possible.",
+    "orderIndex": 31
+  },
+  {
+    "id": "guardians-vol-3",
+    "title": "Guardians of the Galaxy Vol. 3",
+    "thumbnail": "/posters/guardians-vol-3.jpg",
+    "timelineYear": 2026,
+    "releaseYear": 2023,
+    "phase": "Phase 5",
+    "runtime": "150 min",
+    "imdbRating": 7.9,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Chris Pratt",
+      "Zoe Saldana",
+      "Dave Bautista",
+      "Karen Gillan",
+      "Will Poulter"
+    ],
+    "synopsis": "Still reeling from the loss of Gamora, Peter Quill rallies his team to defend the universe and one of their own - a mission that could mean the end of the Guardians if not successful.",
+    "orderIndex": 32
+  },
+  {
+    "id": "the-marvels",
+    "title": "The Marvels",
+    "thumbnail": "/posters/the-marvels.jpg",
+    "timelineYear": 2026,
+    "releaseYear": 2023,
+    "phase": "Phase 5",
+    "runtime": "105 min",
+    "imdbRating": 5.6,
+    "ottPlatforms": [
+      "Disney+"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Brie Larson",
+      "Teyonah Parris",
+      "Iman Vellani",
+      "Samuel L. Jackson"
+    ],
+    "synopsis": "Carol Danvers gets her powers entangled with those of Kamala Khan and Monica Rambeau, forcing them to work together to save the universe.",
+    "orderIndex": 33
+  },
+  {
+    "id": "deadpool-wolverine",
+    "title": "Deadpool & Wolverine",
+    "thumbnail": "/posters/deadpool-wolverine.jpg",
+    "timelineYear": 2026,
+    "releaseYear": 2024,
+    "phase": "Phase 5",
+    "runtime": "128 min",
+    "imdbRating": 7.6,
+    "ottPlatforms": [
+      "Disney+",
+      "JioHotstar"
+    ],
+    "watchUrl": "",
+    "downloadUrl": "",
+    "trailerUrl": "",
+    "cast": [
+      "Ryan Reynolds",
+      "Hugh Jackman",
+      "Emma Corrin",
+      "Matthew Macfadyen"
+    ],
+    "synopsis": "Deadpool is offered a place in the Marvel Cinematic Universe by the Time Variance Authority, but instead recruits a variant of Wolverine to save his universe from extinction.",
+    "orderIndex": 34
+  }
+]
