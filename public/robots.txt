@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://marvelverse-sd.vercel.app/sitemap.xml

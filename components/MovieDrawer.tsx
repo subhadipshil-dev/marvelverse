@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  X, Play, Download, Star, Clock, Calendar, Users, 
+  X, Play, Info, Star, Clock, Calendar, Users, 
   Award, ExternalLink 
 } from 'lucide-react';
 import { Movie } from '@/types/movie';
@@ -54,8 +54,8 @@ export function MovieDrawer({ movie, isOpen, onClose }: MovieDrawerProps) {
     if (movie.downloadUrl) {
       window.open(movie.downloadUrl, '_blank', 'noopener,noreferrer');
     } else {
-      toast("Download link will be added soon", {
-        description: "Premium downloads for offline viewing are being prepared.",
+      toast("More info coming soon", {
+        description: "Additional details and links will be available shortly.",
         className: "premium-toast",
       });
     }
@@ -182,7 +182,7 @@ export function MovieDrawer({ movie, isOpen, onClose }: MovieDrawerProps) {
                         onClick={handleDownload}
                         className="btn btn-download flex-1 min-w-[148px] gap-2 py-3.5 text-base lg:flex-none"
                       >
-                        <Download className="h-4 w-4" /> DOWNLOAD
+                        <Info className="h-4 w-4" /> MORE INFO
                       </button>
 
                       <button 
@@ -279,7 +279,7 @@ export function MovieDrawer({ movie, isOpen, onClose }: MovieDrawerProps) {
             <div className="lg:hidden border-t border-white/10 bg-[#050505]/95 px-4 py-3 backdrop-blur-xl">
               <div className="flex gap-2">
                 <button onClick={handleWatch} className="btn btn-primary flex-1 py-3 text-sm">WATCH</button>
-                <button onClick={handleDownload} className="btn btn-download flex-1 py-3 text-sm">DOWNLOAD</button>
+                <button onClick={handleDownload} className="btn btn-download flex-1 py-3 text-sm">MORE INFO</button>
                 <button onClick={handleTrailer} className="btn btn-secondary flex-1 py-3 text-sm">TRAILER</button>
               </div>
             </div>

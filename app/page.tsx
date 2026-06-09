@@ -13,10 +13,12 @@ import phasesData from '@/data/phases.json';
 import platformsData from '@/data/platforms.json';
 import { Movie } from '@/types/movie';
 import { TimelineItem } from '@/components/TimelineItem';
+import { FilterSystem } from '@/components/FilterSystem';
 import { MovieDrawer } from '@/components/MovieDrawer';
 import { ParticleField } from '@/components/ParticleField';
 import { PlatformLogo } from '@/components/PlatformLogo';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 // Types
 const movies: Movie[] = moviesData as Movie[];
@@ -155,7 +157,12 @@ export default function MarvelverseTimeline() {
   const [activePhase, setActivePhase] = useState("All");
   const [activePlatform, setActivePlatform] = useState("All");
   const [minRating, setMinRating] = useState(0);
-  const [sortBy, setSortBy] = useState<"timeline" | "rating" | "release">("timeline");
+  const [sortBy, setSortBy] = useState<"timeline" | "rating" | "release" | "alpha">("timeline");
+
+  // Docking state for filter system transformation
+  const [isDocked, setIsDocked] = useState(false);
+  const timelineSectionRef = React.useRef<HTMLElement>(null);
+  const filterWrapperRef = React.useRef<HTMLDivElement>(null);
 
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -183,7 +190,8 @@ export default function MarvelverseTimeline() {
         m.title.toLowerCase().includes(q) ||
         m.phase.toLowerCase().includes(q) ||
         m.cast.some(c => c.toLowerCase().includes(q)) ||
-        String(m.timelineYear).includes(q)
+        String(m.timelineYear).includes(q) ||
+        m.synopsis.toLowerCase().includes(q)
       );
     }
 
@@ -207,12 +215,16 @@ export default function MarvelverseTimeline() {
       result.sort((a, b) => a.orderIndex - b.orderIndex);
     } else if (sortBy === "rating") {
       result.sort((a, b) => b.imdbRating - a.imdbRating);
-    } else {
+    } else if (sortBy === "release") {
       result.sort((a, b) => b.releaseYear - a.releaseYear);
+    } else if (sortBy === "alpha") {
+      result.sort((a, b) => a.title.localeCompare(b.title));
     }
 
     return result;
   }, [searchQuery, activePhase, activePlatform, minRating, sortBy]);
+
+
 
   // Stats
   const totalMovies = movies.length;
@@ -249,8 +261,8 @@ export default function MarvelverseTimeline() {
     if (movie.downloadUrl) {
       window.open(movie.downloadUrl, '_blank');
     } else {
-      toast("Download link will be added soon", {
-        description: "We're preparing high-quality offline downloads for the entire timeline.",
+      toast("More info coming soon", {
+        description: "Additional details and links will be available shortly.",
       });
     }
   };
@@ -295,6 +307,33 @@ export default function MarvelverseTimeline() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // IntersectionObserver on the filter bar itself: dock only when the horizontal filter reaches the top of the viewport
+  React.useEffect(() => {
+    const navbarHeight = 80; // approx height of top nav
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // When the top of the filter bar is at or above the navbar, switch to sidebar mode
+        const filterTop = entry.boundingClientRect.top;
+        const shouldDock = filterTop <= navbarHeight;
+        setIsDocked(shouldDock);
+      },
+      {
+        threshold: [0, 0.01, 1],
+        rootMargin: `-${navbarHeight}px 0px 0px 0px`,
+      }
+    );
+
+    const current = filterWrapperRef.current;
+    if (current) {
+      observer.observe(current);
+    }
+
+    return () => {
+      if (current) observer.unobserve(current);
+    };
+  }, []);
+
   // Featured movie of the week (deterministic but nice)
   const featuredMovie = movies.find(m => m.id === "avengers-endgame") || movies[21];
 
@@ -331,93 +370,6 @@ export default function MarvelverseTimeline() {
             >
               <Shuffle className="h-3.5 w-3.5" /> RANDOM
             </button>
-          </div>
-        </div>
-
-        {/* Floating Search + Filters Bar */}
-        <div className="border-t border-white/10 bg-[#0a0a0a]/95 backdrop-blur-3xl">
-          <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-4 md:flex-row md:items-center">
-            {/* Search */}
-            <div className="relative flex-1">
-              <div className="pointer-events-none absolute left-4 top-3 text-white/40">
-                <Search className="h-4 w-4" />
-              </div>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search titles, phases, actors, or years..."
-                className="w-full rounded-2xl border border-white/10 bg-[#111] pl-11 pr-10 py-3 text-sm placeholder:text-white/40 focus:border-[#c8102e]/60 focus:outline-none"
-              />
-              {searchQuery && (
-                <button onClick={() => setSearchQuery("")} className="absolute right-4 top-3 text-white/40 hover:text-white">
-                  <X className="h-4 w-4" />
-                </button>
-              )}
-            </div>
-
-            {/* Filters */}
-            <div className="flex flex-wrap items-center gap-2">
-              {/* Phase Chips */}
-              <div className="flex flex-wrap gap-1.5">
-                {PHASES.map((phase) => (
-                  <button
-                    key={phase}
-                    onClick={() => setActivePhase(phase)}
-                    className={cn("filter-chip", activePhase === phase && "active")}
-                  >
-                    {phase}
-                  </button>
-                ))}
-              </div>
-
-              {/* Platform — Real logos in chips */}
-              <div className="flex flex-wrap gap-1.5">
-                {PLATFORMS.map((platform) => (
-                  <button
-                    key={platform}
-                    onClick={() => setActivePlatform(platform)}
-                    className={cn(
-                      "filter-chip inline-flex items-center gap-1.5",
-                      activePlatform === platform && "active"
-                    )}
-                  >
-                    {platform !== "All" && <PlatformLogo name={platform} className="h-3 w-3" />}
-                    <span>{platform}</span>
-                  </button>
-                ))}
-              </div>
-
-              {/* Min Rating */}
-              <select 
-                value={minRating} 
-                onChange={(e) => setMinRating(Number(e.target.value))}
-                className="filter-chip appearance-none pr-8"
-              >
-                <option value={0}>Any Rating</option>
-                <option value={6}>6.0+</option>
-                <option value={7}>7.0+</option>
-                <option value={7.5}>7.5+</option>
-                <option value={8}>8.0+</option>
-              </select>
-
-              {/* Sort */}
-              <select 
-                value={sortBy} 
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="filter-chip appearance-none pr-8"
-              >
-                <option value="timeline">Timeline Order</option>
-                <option value="rating">Highest Rated</option>
-                <option value="release">Release Year</option>
-              </select>
-
-              {(searchQuery || activePhase !== "All" || activePlatform !== "All" || minRating > 0) && (
-                <button onClick={clearFilters} className="text-xs text-white/60 hover:text-white underline-offset-4 hover:underline">
-                  CLEAR
-                </button>
-              )}
-            </div>
           </div>
         </div>
       </nav>
@@ -533,82 +485,113 @@ export default function MarvelverseTimeline() {
 
               <div className="mt-5 flex flex-wrap gap-3">
                 <button onClick={(e) => { e.stopPropagation(); handleWatch(featuredMovie); }} className="btn btn-primary text-sm px-6 py-2.5">WATCH NOW</button>
-                <button onClick={(e) => { e.stopPropagation(); handleDownload(featuredMovie); }} className="btn btn-download text-sm px-5 py-2.5">DOWNLOAD</button>
+                <button onClick={(e) => { e.stopPropagation(); handleDownload(featuredMovie); }} className="btn btn-download text-sm px-5 py-2.5">MORE INFO</button>
               </div>
             </div>
           </div>
         </div>
       </section>
 
+
+
       {/* ============================================
           TIMELINE + MOVIE GRID
       ============================================ */}
-      <section id="timeline" className="mx-auto max-w-7xl px-6 pb-20 pt-14">
-        <div className="mb-9 flex items-end justify-between">
-          <div>
-            <div className="text-xs uppercase tracking-[3.5px] text-[#c5a46e]">CHRONOLOGICAL ORDER</div>
-            <div className="section-title mt-1 text-4xl font-semibold tracking-[-1.8px]">The Complete MCU Timeline</div>
-          </div>
-          <div className="hidden text-right text-xs text-white/50 md:block">
-            {filteredMovies.length} FILMS SHOWN<br />OF {totalMovies} TOTAL
-          </div>
-        </div>
+      {/* SINGLE FilterSystem rendered once in its original top horizontal position.
+          The same element transforms (width compress, layout rotate to vertical, becomes sticky left) when the bar itself reaches the top (observer on wrapper).
+          layoutId + layout prop on root enables the visible physical docking animation. */}
+      <div ref={filterWrapperRef} className="mx-auto max-w-7xl px-6 pb-6">
+        <FilterSystem
+          docked={isDocked}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          activePhase={activePhase}
+          setActivePhase={setActivePhase}
+          activePlatform={activePlatform}
+          setActivePlatform={setActivePlatform}
+          minRating={minRating}
+          setMinRating={setMinRating}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+        />
+      </div>
 
-        {/* Timeline Visual Progress Indicator */}
-        <div className="mb-8 flex items-center gap-4 text-xs uppercase tracking-widest text-white/50">
-          <div className="flex-1 h-px bg-white/10" />
-          <div>MCU CHRONOLOGY • {filteredMovies.length} FILMS</div>
-          <div className="flex-1 h-px bg-white/10" />
-        </div>
-
-        {/* HORIZONTAL PREMIUM TIMELINE BLOCKS */}
-        <div className="relative pl-10 md:pl-14">
-          {/* Glowing vertical timeline line */}
-          <div className="timeline-line" />
-          <div 
-            className="absolute left-[39px] top-0 z-10 w-[2px] bg-gradient-to-b from-[#c8102e]/30 via-[#c8102e] to-transparent transition-all duration-700" 
-            style={{ height: `${Math.max(12, Math.min(94, timelineProgress))}%` }} 
-          />
-          <div className="timeline-pulse" style={{ top: `${Math.max(4, Math.min(86, timelineProgress - 4))}%` }} />
-
-          <div className="space-y-8">
-            {filteredMovies.map((movie, index) => {
-              const prevYear = index > 0 ? filteredMovies[index - 1].timelineYear : null;
-              const showYearMarker = prevYear === null || prevYear !== movie.timelineYear;
-
-              return (
-                <div key={movie.id} className="relative">
-                  {/* Year Marker aligned to the left of the block */}
-                  {showYearMarker && (
-                    <div className="absolute -left-10 top-3 z-20 flex items-center gap-3 md:-left-14">
-                      <div className="rounded-full bg-[#c8102e] px-3.5 py-1 text-xs font-semibold tracking-[1.5px] text-white shadow-md">
-                        {movie.timelineYear}
-                      </div>
-                      <div className="hidden h-px w-6 bg-white/20 md:block" />
-                    </div>
-                  )}
-
-                  {/* Horizontal content block - wide, premium, Netflix-style */}
-                  <div className="ml-2 md:ml-4">
-                    <TimelineItem
-                      movie={movie}
-                      onDetails={openMovie}
-                      onWatch={handleWatch}
-                      onDownload={handleDownload}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {filteredMovies.length === 0 && (
-            <div className="py-16 text-center text-white/60">
-              No films match your current filters.<br />
-              <button onClick={clearFilters} className="mt-3 underline">Clear all filters</button>
+      {/* ============================================
+          TIMELINE + MOVIE GRID
+      ============================================ */}
+      <section 
+        id="timeline" 
+        ref={timelineSectionRef as any}
+        className="mx-auto max-w-7xl px-6 pb-20 pt-8"
+      >
+        {/* Timeline content - remains centered. The sidebar will appear to the left of this centered area via the filter's negative margin when docked. */}
+        <div>
+            {/* Header */}
+            <div className="mb-9 flex items-end justify-between">
+              <div>
+                <div className="text-xs uppercase tracking-[3.5px] text-[#c5a46e]">CHRONOLOGICAL ORDER</div>
+                <div className="section-title mt-1 text-4xl font-semibold tracking-[-1.8px]">The Complete MCU Timeline</div>
+              </div>
+              <div className="hidden text-right text-xs text-white/50 md:block">
+                {filteredMovies.length} FILMS SHOWN<br />OF {totalMovies} TOTAL
+              </div>
             </div>
-          )}
-        </div>
+
+            {/* Timeline Visual Progress Indicator */}
+            <div className="mb-8 flex items-center gap-4 text-xs uppercase tracking-widest text-white/50">
+              <div className="flex-1 h-px bg-white/10" />
+              <div>MCU CHRONOLOGY • {filteredMovies.length} FILMS</div>
+              <div className="flex-1 h-px bg-white/10" />
+            </div>
+
+            {/* The timeline blocks with line */}
+            <div className="relative pl-10 md:pl-14">
+              {/* Glowing vertical timeline line */}
+              <div className="timeline-line" />
+              <div 
+                className="absolute left-[39px] top-0 z-10 w-[2px] bg-gradient-to-b from-[#c8102e]/30 via-[#c8102e] to-transparent transition-all duration-700" 
+                style={{ height: `${Math.max(12, Math.min(94, timelineProgress))}%` }} 
+              />
+              <div className="timeline-pulse" style={{ top: `${Math.max(4, Math.min(86, timelineProgress - 4))}%` }} />
+
+              <div className="space-y-8">
+                {filteredMovies.map((movie, index) => {
+                  const prevYear = index > 0 ? filteredMovies[index - 1].timelineYear : null;
+                  const showYearMarker = prevYear === null || prevYear !== movie.timelineYear;
+
+                  return (
+                    <div key={movie.id} className="relative">
+                      {/* Year Marker (only in horizontal mode) */}
+                      {showYearMarker && !isDocked && (
+                        <div className="absolute -left-10 top-3 z-20 flex items-center gap-3 md:-left-14">
+                          <div className="rounded-full bg-[#c8102e] px-3.5 py-1 text-xs font-semibold tracking-[1.5px] text-white shadow-md">
+                            {movie.timelineYear}
+                          </div>
+                          <div className="hidden h-px w-6 bg-white/20 md:block" />
+                        </div>
+                      )}
+
+                      <div className={isDocked ? "" : "ml-2 md:ml-4"}>
+                        <TimelineItem
+                          movie={movie}
+                          onDetails={openMovie}
+                          onWatch={handleWatch}
+                          onDownload={handleDownload}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {filteredMovies.length === 0 && (
+                <div className="py-16 text-center text-white/60">
+                  No films match your current filters.<br />
+                  <button onClick={clearFilters} className="mt-3 underline">Clear all filters</button>
+                </div>
+              )}
+            </div>
+          </div>
       </section>
 
       {/* ============================================
@@ -683,7 +666,22 @@ export default function MarvelverseTimeline() {
           <div className="font-semibold tracking-tight text-white text-lg">MARVELVERSE TIMELINE</div>
           <p className="mt-2 text-xs leading-relaxed">
             A premium fan experience. Not affiliated with Marvel Studios or Disney.<br />
-            All download and streaming links are placeholders and will be populated with official sources.
+            All links are placeholders and will be populated with official sources.
+          </p>
+
+          {/* Footer Links */}
+          <div className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs">
+            <Link href="/about" className="hover:text-white transition-colors">About</Link>
+            <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
+            <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+          </div>
+
+          {/* Copyright Disclaimer for AdSense compliance */}
+          <p className="mt-6 text-[10px] leading-relaxed text-white/40 max-w-sm mx-auto">
+            MarvelVerse is an unofficial fan-made MCU reference guide.<br />
+            Marvel, Marvel Studios, and all related characters, logos, artwork, and trademarks are property of Marvel Entertainment and The Walt Disney Company.<br />
+            This website is not affiliated with, endorsed by, or sponsored by Marvel Studios or Disney.
           </p>
         </div>
 

@@ -124,7 +124,7 @@ export function TimelineItem({
             className="flex h-11 items-center justify-center gap-2 rounded-2xl border border-[#c5a46e]/70 text-sm font-semibold tracking-[0.5px] text-[#c5a46e] transition-all hover:border-[#c5a46e] hover:bg-[#c5a46e]/5 active:scale-[0.985]"
           >
             <Download className="h-4 w-4" />
-            DOWNLOAD
+            MORE INFO
           </button>
 
           <button

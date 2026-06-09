@@ -167,7 +167,7 @@ body {
   box-shadow: var(--shadow-glow-gold);
 }
 
-/* Download button always prominent */
+/* More Info button always prominent */
 .btn-download {
   background: transparent;
   color: var(--gold);
@@ -288,6 +288,56 @@ body {
   width: 12px;
   height: 12px;
   object-fit: contain;
+}
+
+/* ============================================
+   PREMIUM FILTER PANEL STYLES
+   ============================================ */
+
+.premium-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  outline: none;
+  position: relative;
+}
+
+.premium-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #c8102e;
+  border: 3px solid #050505;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.25),
+              0 4px 12px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.premium-slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 0 6px rgba(200, 16, 46, 0.35),
+              0 0 20px rgba(200, 16, 46, 0.6);
+  transform: scale(1.1);
+}
+
+.premium-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: #c8102e;
+  border: 3px solid #050505;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.25);
+}
+
+.premium-slider::-moz-range-track {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
 }
 
 /* Light sweep effect on card */

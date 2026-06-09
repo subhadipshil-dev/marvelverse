@@ -141,7 +141,7 @@ export function MovieCard({
             className="flex h-9 items-center justify-center gap-1.5 rounded-xl border border-[#c5a46e]/60 text-[11px] font-semibold tracking-[0.3px] text-[#c5a46e] transition-all hover:border-[#c5a46e] hover:bg-[#c5a46e]/5 active:scale-[0.985]"
           >
             <Download className="h-3.5 w-3.5" />
-            <span>DOWNLOAD</span>
+            <span>MORE INFO</span>
           </button>
 
           <button
