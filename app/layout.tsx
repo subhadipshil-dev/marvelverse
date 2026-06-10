@@ -18,9 +18,8 @@ export const metadata: Metadata = {
   title: "MARVELVERSE TIMELINE | Ultimate MCU Chronology & Watch Guide",
   description: "Experience the Marvel Cinematic Universe in perfect chronological order. Premium timeline, stunning visuals, and the definitive MCU watch guide.",
   metadataBase: new URL("https://marvelverse-sd.vercel.app"),
-  icons: {
-    icon: "/favicon.ico",
-  },
+  // Icons are manually linked in <head> below using the provided tags for full favicon set from assets
+  // (Next.js metadata icons removed to avoid duplication with manual links)
   openGraph: {
     title: "MARVELVERSE TIMELINE",
     description: "The ultimate premium MCU chronological experience. Explore every film in timeline order with cinematic design.",
@@ -58,6 +57,12 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+      </head>
       <body className="min-h-full flex flex-col bg-[#050505] text-[#f5f5f5]">
         {children}
         <Script

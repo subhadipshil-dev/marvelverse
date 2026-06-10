@@ -349,7 +349,7 @@ export default function MarvelverseTimeline() {
       <nav className="sticky top-0 z-50 border-b border-white/10 bg-[#050505]/90 backdrop-blur-3xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#c8102e] text-sm font-bold tracking-[1.5px]">MV</div>
+            <img src="/favicon.ico" alt="MarvelVerse Logo" className="h-9 w-9 rounded-xl" />
             <div>
               <div className="font-semibold tracking-[-0.4px] text-xl">MARVELVERSE</div>
               <div className="text-[9px] -mt-1 text-[#c5a46e] tracking-[2.5px]">TIMELINE</div>
@@ -661,7 +661,7 @@ export default function MarvelverseTimeline() {
       <footer className="border-t border-white/10 bg-black/60 py-16 text-center text-sm text-white/50">
         <div className="mx-auto max-w-md px-6">
           <div className="mb-2 flex justify-center">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c8102e] text-xs font-bold tracking-widest">MV</div>
+            <img src="/favicon.ico" alt="MarvelVerse Logo" className="h-8 w-8 rounded-xl" />
           </div>
           <div className="font-semibold tracking-tight text-white text-lg">MARVELVERSE TIMELINE</div>
           <p className="mt-2 text-xs leading-relaxed">

@@ -7,6 +7,9 @@ export default function ContactPage() {
     <main className="min-h-screen bg-[#050505] text-[#f5f5f5] py-16">
       <div className="max-w-3xl mx-auto px-6">
         <div className="text-center mb-16">
+          <div className="flex justify-center mb-4">
+            <img src="/favicon.ico" alt="MarvelVerse Logo" className="h-12 w-12 rounded-xl" />
+          </div>
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1 text-xs tracking-[3px] text-[#c5a46e] mb-4">
             GET IN TOUCH
           </div>
