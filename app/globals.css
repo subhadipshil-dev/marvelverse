@@ -43,7 +43,12 @@ html {
 
 body {
   font-family: var(--font-geist-sans);
-  background: var(--bg-primary);
+  background: #050505;
+  /* Base cinematic wash - layered red/gold so even before React layers the page never feels like flat black */
+  background-image: 
+    radial-gradient(circle at 22% 18%, rgba(200,16,46,0.07) 0%, transparent 48%),
+    radial-gradient(circle at 78% 72%, rgba(197,164,110,0.045) 0%, transparent 55%);
+  background-attachment: fixed;
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -402,7 +407,7 @@ body {
   left: 250%;
 }
 
-/* === TIMELINE === */
+/* === TIMELINE - SOFT CINEMATIC GLOW === */
 .timeline-line {
   position: absolute;
   left: 31px;
@@ -410,11 +415,16 @@ body {
   bottom: 0;
   width: 2px;
   background: linear-gradient(to bottom, 
-    rgba(200,16,46,0.15) 0%, 
-    var(--red-primary) 12%, 
-    var(--red-glow) 50%, 
-    var(--red-primary) 88%, 
-    rgba(200,16,46,0.15) 100%);
+    rgba(200,16,46,0.18) 0%, 
+    var(--red-primary) 9%, 
+    var(--red-glow) 48%, 
+    var(--red-primary) 86%, 
+    rgba(200,16,46,0.18) 100%);
+  /* Wider soft ambient red glow - premium energy field feel */
+  box-shadow: 
+    0 0 6px rgba(200,16,46,0.35),
+    1.5px 0 18px rgba(200,16,46,0.22),
+    -1px 0 32px rgba(200,16,46,0.12);
 }
 
 .timeline-pulse {
@@ -425,13 +435,33 @@ body {
   height: 10px;
   background: var(--red-primary);
   border-radius: 9999px;
-  box-shadow: 0 0 0 4px rgba(200,16,46,0.3), 0 0 30px var(--red-glow);
+  box-shadow: 
+    0 0 0 4px rgba(200,16,46,0.32), 
+    0 0 22px var(--red-glow),
+    0 0 48px rgba(200,16,46,0.18);
   animation: timeline-pulse-anim 2.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
 
 @keyframes timeline-pulse-anim {
-  0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
-  50% { opacity: 1; transform: translateX(-50%) scale(1.6); }
+  0%, 100% { opacity: 0.55; transform: translateX(-50%) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1.55); }
+}
+
+/* Soft red wash behind the timeline list for "light hitting the set" feel */
+#timeline .relative.pl-10 {
+  position: relative;
+}
+#timeline .relative.pl-10::before {
+  content: '';
+  position: absolute;
+  left: 18px;
+  top: 10px;
+  bottom: 10px;
+  width: 110px;
+  background: linear-gradient(to right, rgba(200,16,46,0.045), transparent);
+  pointer-events: none;
+  border-radius: 999px;
+  z-index: 0;
 }
 
 /* === FILTER CHIPS === */
@@ -597,6 +627,47 @@ body {
 .platform-badge:hover {
   background: rgba(255,255,255,0.1);
   transform: translateY(-1px);
+}
+
+/* === CINEMATIC CARD SPOTLIGHT (premium mouse-reactive lighting) ===
+   Used on timeline items and glass cards to feel like light moving across the "set".
+   The element must have position:relative and the JS must set --mouse-x / --mouse-y (in %).
+*/
+.cinematic-spotlight {
+  position: relative;
+  overflow: hidden;
+}
+
+.cinematic-spotlight::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: radial-gradient(
+    680px circle at var(--mouse-x, 50%) var(--mouse-y, 42%),
+    rgba(200,16,46,0.085),
+    rgba(197,164,110,0.035) 32%,
+    transparent 58%
+  );
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+  border-radius: inherit;
+  transition: opacity 280ms ease;
+  mix-blend-mode: screen;
+}
+
+.cinematic-spotlight:hover::before {
+  opacity: 1;
+}
+
+/* Slightly stronger on the main timeline blocks */
+#timeline .cinematic-spotlight::before {
+  background: radial-gradient(
+    720px circle at var(--mouse-x, 50%) var(--mouse-y, 42%),
+    rgba(200,16,46,0.095),
+    rgba(197,164,110,0.04) 30%,
+    transparent 55%
+  );
 }
 
 /* === TOAST STYLING (Sonner overrides) === */

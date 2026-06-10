@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Play, Download, Info, Star, Clock, Calendar } from 'lucide-react';
 import { Movie } from '@/types/movie';
@@ -20,6 +20,7 @@ export function TimelineItem({
   onDownload 
 }: TimelineItemProps) {
   const shouldReduceMotion = useReducedMotion();
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const handleDownload = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -36,6 +37,17 @@ export function TimelineItem({
     onDetails(movie);
   };
 
+  // Premium cinematic spotlight - mouse reactive red/gold lighting on the card surface
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const el = cardRef.current;
+    if (!el || shouldReduceMotion) return;
+    const rect = el.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    el.style.setProperty('--mouse-x', `${x}%`);
+    el.style.setProperty('--mouse-y', `${y}%`);
+  };
+
   // Premium scroll entry - elegant, not flashy. Stagger happens naturally via scroll order + parent list.
   const cardTransition = shouldReduceMotion 
     ? { duration: 0.2 } 
@@ -43,8 +55,10 @@ export function TimelineItem({
 
   return (
     <motion.div 
+      ref={cardRef}
       onClick={() => onDetails(movie)}
-      className="group relative flex w-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#0a0a0a] transition-all duration-300 hover:border-white/20 hover:shadow-[0_25px_80px_-20px_rgb(0,0,0,0.7)] md:flex-row md:items-start focus:outline-none focus-visible:ring-1 focus-visible:ring-[#c8102e]/50"
+      onMouseMove={handleMouseMove}
+      className="group relative flex w-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#0a0a0a] transition-all duration-300 hover:border-white/20 hover:shadow-[0_25px_80px_-20px_rgb(0,0,0,0.7)] md:flex-row md:items-start focus:outline-none focus-visible:ring-1 focus-visible:ring-[#c8102e]/50 cinematic-spotlight"
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {

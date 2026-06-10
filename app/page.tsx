@@ -145,6 +145,10 @@ export default function MarvelverseTimeline() {
   const featuredPosterY = useTransform(pageScroll, [0.08, 0.32], [4, -14]);
   const featuredPosterScale = useTransform(pageScroll, [0.08, 0.32], [0.985, 1.012]);
 
+  // Cinematic scroll-reactive ambient lighting (orbs drift with scroll for premium moving light feel)
+  const { scrollYProgress: globalScroll } = useScroll();
+  const ambientIntensity = useTransform(globalScroll, [0, 0.12, 0.82, 1], [0.72, 1, 0.95, 0.78]);
+
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
 
@@ -293,6 +297,77 @@ export default function MarvelverseTimeline() {
 
   return (
     <div className="min-h-screen bg-[#050505] text-[#f5f5f5] selection:bg-[#c8102e] selection:text-white">
+      {/* ============================================
+          CINEMATIC PREMIUM BACKGROUND LAYERS
+          Layered ambient red + gold radials, scroll-reactive lighting,
+          subtle floating particles (global ambient), soft vignette.
+          Feels like a Marvel Studios streaming title sequence.
+      ============================================ */}
+      <div className="fixed inset-0 -z-20 pointer-events-none overflow-hidden">
+        {/* Deep base */}
+        <div className="absolute inset-0 bg-[#050505]" />
+
+        {/* === SCROLL-REACTIVE CINEMATIC LIGHTING ORBS === */}
+        {/* Red key light orb - drifts right slowly as you scroll (premium "studio light" movement) */}
+        <motion.div
+          className="absolute rounded-full"
+          style={{
+            left: '18%',
+            top: '12%',
+            width: '720px',
+            height: '720px',
+            background: 'rgba(200,16,46,0.11)',
+            filter: 'blur(140px)',
+            opacity: ambientIntensity,
+            x: useTransform(globalScroll, [0, 1], [0, 140]), // subtle right drift
+            transform: 'translate(-40%, -30%)',
+          }}
+        />
+
+        {/* Gold fill light orb - rises from bottom as you scroll, warm cinematic accent */}
+        <motion.div
+          className="absolute rounded-full"
+          style={{
+            right: '12%',
+            top: '62%',
+            width: '820px',
+            height: '820px',
+            background: 'rgba(197,164,110,0.075)',
+            filter: 'blur(160px)',
+            opacity: ambientIntensity,
+            y: useTransform(globalScroll, [0, 1], [80, -70]), // rises with scroll
+            transform: 'translate(30%, -25%)',
+          }}
+        />
+
+        {/* Subtle secondary red rim / back light for depth (right side) */}
+        <div 
+          className="absolute rounded-full"
+          style={{ 
+            right: '-8%',
+            bottom: '18%',
+            width: '620px',
+            height: '620px',
+            background: 'rgba(200,16,46,0.055)',
+            filter: 'blur(110px)',
+            transform: 'translate(25%, 30%)',
+          }} 
+        />
+
+        {/* Very subtle cool top-down "projector" wash for premium title card feel */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_5%,rgba(255,255,255,0.018)_0%,transparent_55%)]" />
+
+        {/* Bottom grounded shadow so timeline and lower content feel anchored in the "set" */}
+        <div className="absolute inset-x-0 bottom-0 h-[42%] bg-gradient-to-t from-[#050505]/75 via-[#050505]/25 to-transparent" />
+
+        {/* Global subtle ambient particle field across entire page (very faint, slow cinematic dust) */}
+        <ParticleField 
+          variant="ambient" 
+          zIndex="z-[-1]" 
+          className="opacity-[0.65]" 
+        />
+      </div>
+
       {/* Fixed Scroll Progress */}
       <div 
         className="scroll-progress" 
@@ -478,7 +553,7 @@ export default function MarvelverseTimeline() {
                 <motion.div 
                   key={i} 
                   variants={cardVariants}
-                  className="glass rounded-2xl border border-white/10 p-5 flex items-center gap-4"
+                  className="glass rounded-2xl border border-white/10 p-5 flex items-center gap-4 cinematic-spotlight"
                 >
                   <div className="text-3xl font-semibold tracking-[-1px] text-white tabular-nums">
                     <AnimatedCounter value={stat.value} />
@@ -561,7 +636,7 @@ export default function MarvelverseTimeline() {
 
           <div 
             onClick={() => openMovie(featuredMovie)}
-            className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0a0a0a] md:flex-row"
+            className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0a0a0a] md:flex-row cinematic-spotlight"
           >
             {/* Portrait poster on the side for featured - subtle scroll parallax + entry */}
             <motion.div 
@@ -737,7 +812,7 @@ export default function MarvelverseTimeline() {
             {phasesData.map((phase: any, idx: number) => (
               <motion.div 
                 key={idx} 
-                className="glass rounded-2xl p-6"
+                className="glass rounded-2xl p-6 cinematic-spotlight"
                 variants={cardVariants}
                 initial="hidden"
                 whileInView="visible"
@@ -750,7 +825,7 @@ export default function MarvelverseTimeline() {
               </motion.div>
             ))}
             <motion.div 
-              className="glass col-span-1 flex flex-col justify-between rounded-2xl p-6 md:col-span-2 lg:col-span-1"
+              className="glass col-span-1 flex flex-col justify-between rounded-2xl p-6 md:col-span-2 lg:col-span-1 cinematic-spotlight"
               variants={cardVariants}
               initial="hidden"
               whileInView="visible"
