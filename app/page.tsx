@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { 
   Search, X, Shuffle, ArrowUp, Play, Star, Award, 
   Calendar, Users, Film, ChevronDown 
@@ -55,7 +55,64 @@ function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: strin
   );
 }
 
+// Reusable animation variants for premium scroll feel (staggered, spring, elegant)
+const sectionVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.06,
+      delayChildren: 0.1
+    }
+  }
+};
 
+const cardVariants = {
+  hidden: { opacity: 0, y: 40, scale: 0.96 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    scale: 1,
+    transition: { type: "spring" as const, stiffness: 70, damping: 16 }
+  }
+};
+
+const textVariants = {
+  hidden: { opacity: 0, y: 15 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5, ease: [0.23, 1, 0.32, 1] as [number, number, number, number] }
+  }
+};
+
+const staggerContainer = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.12
+    }
+  }
+};
+
+const headingVariants = {
+  hidden: { opacity: 0, y: 18 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.65, ease: [0.23, 1, 0.32, 1] as [number, number, number, number] }
+  }
+};
+
+const posterVariants = {
+  hidden: { opacity: 0, scale: 0.96, y: 20 },
+  visible: { 
+    opacity: 1, 
+    scale: 1, 
+    y: 0,
+    transition: { type: "spring" as const, stiffness: 60, damping: 18 }
+  }
+};
 
 // Main Page
 export default function MarvelverseTimeline() {
@@ -71,6 +128,22 @@ export default function MarvelverseTimeline() {
   const [currentHeroMovie, setCurrentHeroMovie] = useState(
     movies.find((m) => m.id === "avengers-endgame") || movies[0]
   );
+
+  const shouldReduceMotion = useReducedMotion();
+
+  // For timeline progressive line glow
+  const timelineRef = React.useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: timelineRef,
+    offset: ["start end", "end start"]
+  });
+  const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const lineOpacity = useTransform(scrollYProgress, [0, 0.2, 1], [0.4, 1, 0.9]);
+
+  // Subtle parallax for allowed elements (hero backdrop already has Ken Burns; featured poster)
+  const { scrollYProgress: pageScroll } = useScroll();
+  const featuredPosterY = useTransform(pageScroll, [0.08, 0.32], [4, -14]);
+  const featuredPosterScale = useTransform(pageScroll, [0.08, 0.32], [0.985, 1.012]);
 
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -264,17 +337,19 @@ export default function MarvelverseTimeline() {
           key={currentHeroMovie.id}
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${currentHeroMovie.thumbnail})` }}
-          initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
+          initial={shouldReduceMotion ? { opacity: 0.85 } : { opacity: 0, scale: 1.1 }}
+          animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+          transition={{ duration: shouldReduceMotion ? 0.4 : 1.2, ease: "easeOut" }}
         >
-          {/* Slow zoom animation layer */}
-          <motion.div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${currentHeroMovie.thumbnail})` }}
-            animate={{ scale: [1, 1.08] }}
-            transition={{ duration: 25, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
-          />
+          {/* Slow zoom animation layer - cinematic but skipped on reduced motion */}
+          {!shouldReduceMotion && (
+            <motion.div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${currentHeroMovie.thumbnail})` }}
+              animate={{ scale: [1, 1.08] }}
+              transition={{ duration: 25, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+            />
+          )}
         </motion.div>
 
         {/* Cinematic dark gradient overlay */}
@@ -289,39 +364,50 @@ export default function MarvelverseTimeline() {
         <div className="relative z-10 h-full max-w-7xl mx-auto px-6 flex flex-col">
           {/* Main content grid: Left info + Right poster */}
           <div className="flex-1 flex flex-col lg:flex-row items-center justify-between gap-8 pt-12 pb-8">
-            {/* LEFT: Movie info */}
-            <div className="flex-1 max-w-2xl space-y-5">
-              {/* Badges */}
-              <div className="flex flex-wrap gap-3">
+            {/* LEFT: Movie info - staggered reveal */}
+            <motion.div 
+              className="flex-1 max-w-2xl space-y-5"
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+            >
+              {/* Badges - staggered */}
+              <motion.div variants={textVariants} className="flex flex-wrap gap-3">
                 <div className="inline-flex items-center rounded-full bg-[#c8102e]/90 px-4 py-1 text-xs font-semibold tracking-[2px] text-white">
                   {currentHeroMovie.phase}
                 </div>
                 <div className="inline-flex items-center rounded-full border border-white/20 bg-white/5 px-4 py-1 text-xs font-medium tracking-[1px] text-white/90">
                   {currentHeroMovie.timelineYear}
                 </div>
-              </div>
+              </motion.div>
 
-              {/* Large Title */}
-              <h1 className="text-5xl md:text-7xl font-semibold tracking-[-2.5px] leading-[0.95] text-white">
+              {/* Large Title - staggered reveal */}
+              <motion.h1 
+                variants={textVariants}
+                className="text-5xl md:text-7xl font-semibold tracking-[-2.5px] leading-[0.95] text-white"
+              >
                 {currentHeroMovie.title}
-              </h1>
+              </motion.h1>
 
               {/* Meta row */}
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/70">
+              <motion.div variants={textVariants} className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/70">
                 <div className="flex items-center gap-1.5 text-[#c5a46e] font-semibold">
                   <Star className="h-4 w-4 fill-current" /> {currentHeroMovie.imdbRating} IMDb
                 </div>
                 <div>{currentHeroMovie.runtime}</div>
                 <div>{currentHeroMovie.releaseYear}</div>
-              </div>
+              </motion.div>
 
               {/* Synopsis */}
-              <p className="max-w-xl text-[15px] leading-relaxed text-white/80 line-clamp-4">
+              <motion.p 
+                variants={textVariants}
+                className="max-w-xl text-[15px] leading-relaxed text-white/80 line-clamp-4"
+              >
                 {currentHeroMovie.synopsis}
-              </p>
+              </motion.p>
 
               {/* Available Platforms */}
-              <div>
+              <motion.div variants={textVariants}>
                 <div className="text-xs uppercase tracking-[2px] text-white/40 mb-2">Available on</div>
                 <div className="flex flex-wrap gap-2">
                   {currentHeroMovie.ottPlatforms.map((platform) => (
@@ -331,10 +417,10 @@ export default function MarvelverseTimeline() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
 
-              {/* CTAs */}
-              <div className="flex flex-wrap gap-4 pt-2">
+              {/* CTAs - soft spring entry */}
+              <motion.div variants={textVariants} className="flex flex-wrap gap-4 pt-2">
                 <button 
                   onClick={() => openMovie(currentHeroMovie)} 
                   className="btn btn-primary px-8 py-3.5 text-base"
@@ -347,8 +433,8 @@ export default function MarvelverseTimeline() {
                 >
                   VIEW TIMELINE POSITION
                 </button>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
             {/* RIGHT: Large featured poster with float and glow */}
             <div className="relative hidden lg:block flex-shrink-0">
@@ -358,10 +444,10 @@ export default function MarvelverseTimeline() {
               <motion.div
                 key={currentHeroMovie.id}
                 className="relative w-[340px] aspect-[2/3] rounded-3xl overflow-hidden border border-white/10 shadow-[0_30px_80px_-15px_rgb(0,0,0,0.8)]"
-                initial={{ opacity: 0, x: 60, rotateY: 8 }}
-                animate={{ opacity: 1, x: 0, rotateY: 0 }}
-                whileHover={{ scale: 1.015, rotateY: -2 }}
-                transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+                initial={shouldReduceMotion ? { opacity: 0.9 } : { opacity: 0, x: 60, rotateY: 8 }}
+                animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, x: 0, rotateY: 0 }}
+                whileHover={shouldReduceMotion ? { scale: 1.01 } : { scale: 1.015, rotateY: -2 }}
+                transition={{ duration: shouldReduceMotion ? 0.35 : 0.7, ease: [0.23, 1, 0.32, 1] }}
               >
                 <img 
                   src={currentHeroMovie.thumbnail} 
@@ -375,8 +461,13 @@ export default function MarvelverseTimeline() {
             </div>
           </div>
 
-          {/* Redesigned Top Stats as glass cards below title area */}
-          <div className="pb-8">
+          {/* Redesigned Top Stats as glass cards below title area - staggered on load */}
+          <motion.div 
+            className="pb-8"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+          >
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
                 { label: "MOVIES", value: totalMovies },
@@ -384,27 +475,38 @@ export default function MarvelverseTimeline() {
                 { label: "PHASES", value: totalPhases },
                 { label: "PLATFORMS", value: platformsCount },
               ].map((stat, i) => (
-                <div key={i} className="glass rounded-2xl border border-white/10 p-5 flex items-center gap-4">
+                <motion.div 
+                  key={i} 
+                  variants={cardVariants}
+                  className="glass rounded-2xl border border-white/10 p-5 flex items-center gap-4"
+                >
                   <div className="text-3xl font-semibold tracking-[-1px] text-white tabular-nums">
                     <AnimatedCounter value={stat.value} />
                   </div>
                   <div className="text-xs uppercase tracking-[2px] text-white/50 leading-tight">{stat.label}</div>
-                </div>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* BOTTOM: Interactive Movie Carousel */}
         <div className="absolute bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-[#050505] via-[#050505]/95 to-transparent pt-12 pb-6">
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-xs uppercase tracking-[2.5px] text-white/40 mb-3">EXPLORE THE COLLECTION</div>
-            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
+            <motion.div 
+              className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory"
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+            >
               {movies.slice(0, 7).map((movie) => {
                 const isActive = currentHeroMovie.id === movie.id;
                 return (
                   <motion.button
                     key={movie.id}
+                    variants={cardVariants}
                     onClick={() => setCurrentHeroMovie(movie)}
                     className={cn(
                       "flex-shrink-0 snap-start rounded-2xl overflow-hidden border transition-all duration-300",
@@ -433,7 +535,7 @@ export default function MarvelverseTimeline() {
                   </motion.button>
                 );
               })}
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -441,7 +543,13 @@ export default function MarvelverseTimeline() {
       {/* ============================================
           FEATURED MOVIE OF THE WEEK (Premium Banner)
       ============================================ */}
-      <section className="border-b border-white/10 bg-[#0a0a0a]">
+      <motion.section 
+        className="border-b border-white/10 bg-[#0a0a0a]"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+      >
         <div className="mx-auto max-w-7xl px-6 py-9">
           <div className="flex items-center justify-between pb-4">
             <div>
@@ -455,8 +563,11 @@ export default function MarvelverseTimeline() {
             onClick={() => openMovie(featuredMovie)}
             className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0a0a0a] md:flex-row"
           >
-            {/* Portrait poster on the side for featured */}
-            <div className="relative w-full overflow-hidden bg-black md:w-[260px] lg:w-[280px]">
+            {/* Portrait poster on the side for featured - subtle scroll parallax + entry */}
+            <motion.div 
+              className="relative w-full overflow-hidden bg-black md:w-[260px] lg:w-[280px]"
+              style={!shouldReduceMotion ? { y: featuredPosterY, scale: featuredPosterScale } : undefined}
+            >
               <div className="relative aspect-[2/3] w-full md:aspect-auto md:h-full">
                 <img 
                   src={featuredMovie.thumbnail} 
@@ -464,7 +575,7 @@ export default function MarvelverseTimeline() {
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                 />
               </div>
-            </div>
+            </motion.div>
 
             <div className="flex flex-1 flex-col justify-center p-6 md:p-8">
               <div className="mb-1 flex items-center gap-3 text-xs">
@@ -485,14 +596,18 @@ export default function MarvelverseTimeline() {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
 
 
       {/* ============================================
           TIMELINE + MOVIE GRID
       ============================================ */}
-      {/* SINGLE FilterSystem component - horizontal layout, no animations. Container is fixed only in landscape mode via CSS. */}
+      {/* SINGLE FilterSystem component.
+          Must remain completely static in normal document flow.
+          Full-width horizontal layout, below featured and above timeline.
+          EXCLUDED from all scroll animations and layout transforms.
+          Do not wrap in motion, do not add special classes for docking/sidebar. */}
       <div className="mx-auto max-w-7xl px-6 pb-6">
         <FilterSystem
           searchQuery={searchQuery}
@@ -513,12 +628,19 @@ export default function MarvelverseTimeline() {
       ============================================ */}
       <section 
         id="timeline" 
+        ref={timelineRef}
         className="mx-auto max-w-7xl px-6 pb-20 pt-8"
       >
         {/* Timeline content remains centered. */}
         <div>
-            {/* Header */}
-            <div className="mb-9 flex items-end justify-between">
+            {/* Header - sequential reveal */}
+            <motion.div 
+              className="mb-9 flex items-end justify-between"
+              variants={headingVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
               <div>
                 <div className="text-xs uppercase tracking-[3.5px] text-[#c5a46e]">CHRONOLOGICAL ORDER</div>
                 <div className="section-title mt-1 text-4xl font-semibold tracking-[-1.8px]">The Complete MCU Timeline</div>
@@ -526,7 +648,7 @@ export default function MarvelverseTimeline() {
               <div className="hidden text-right text-xs text-white/50 md:block">
                 {filteredMovies.length} FILMS SHOWN<br />OF {totalMovies} TOTAL
               </div>
-            </div>
+            </motion.div>
 
             {/* Timeline Visual Progress Indicator */}
             <div className="mb-8 flex items-center gap-4 text-xs uppercase tracking-widest text-white/50">
@@ -537,11 +659,15 @@ export default function MarvelverseTimeline() {
 
             {/* The timeline blocks with line */}
             <div className="relative pl-10 md:pl-14">
-              {/* Glowing vertical timeline line */}
+              {/* Glowing vertical timeline line - progressive glow on scroll */}
               <div className="timeline-line" />
-              <div 
-                className="absolute left-[39px] top-0 z-10 w-[2px] bg-gradient-to-b from-[#c8102e]/30 via-[#c8102e] to-transparent transition-all duration-700" 
-                style={{ height: `${Math.max(12, Math.min(94, timelineProgress))}%` }} 
+              <motion.div 
+                className="absolute left-[39px] top-0 z-10 w-[2px] bg-gradient-to-b from-[#c8102e]/30 via-[#c8102e] to-transparent"
+                style={{ 
+                  height: lineHeight,
+                  opacity: lineOpacity,
+                  boxShadow: "0 0 8px rgba(200,16,46,0.6)"
+                }} 
               />
               <div className="timeline-pulse" style={{ top: `${Math.max(4, Math.min(86, timelineProgress - 4))}%` }} />
 
@@ -588,45 +714,86 @@ export default function MarvelverseTimeline() {
       {/* ============================================
           MCU STATISTICS DASHBOARD
       ============================================ */}
-      <section className="border-y border-white/10 bg-[#0a0a0a] py-14">
+      <motion.section 
+        className="border-y border-white/10 bg-[#0a0a0a] py-14"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="mx-auto max-w-7xl px-6">
-          <div className="mb-8 text-center">
+          <motion.div 
+            className="mb-8 text-center"
+            variants={headingVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
             <div className="text-xs tracking-[3.5px] text-[#c5a46e]">THE UNIVERSE AT A GLANCE</div>
             <div className="mt-1 text-3xl font-semibold tracking-[-1px]">MCU by the Numbers</div>
-          </div>
+          </motion.div>
 
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
             {phasesData.map((phase: any, idx: number) => (
-              <div key={idx} className="glass rounded-2xl p-6">
+              <motion.div 
+                key={idx} 
+                className="glass rounded-2xl p-6"
+                variants={cardVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              >
                 <div className="text-xs tracking-widest text-white/50">{phase.name}</div>
                 <div className="mt-2 text-5xl font-semibold tracking-[-1.5px] text-white">{phase.movies}</div>
                 <div className="mt-1 text-sm text-white/60">films</div>
-              </div>
+              </motion.div>
             ))}
-            <div className="glass col-span-1 flex flex-col justify-between rounded-2xl p-6 md:col-span-2 lg:col-span-1">
+            <motion.div 
+              className="glass col-span-1 flex flex-col justify-between rounded-2xl p-6 md:col-span-2 lg:col-span-1"
+              variants={cardVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+            >
               <div>
                 <div className="text-xs tracking-widest text-white/50">HIGHEST RATED</div>
                 <div className="mt-3 text-[22px] font-semibold leading-none tracking-tight">Avengers: Infinity War &amp; Endgame</div>
               </div>
               <div className="mt-6 text-4xl font-semibold text-[#c5a46e] tracking-[-1px]">8.4</div>
-            </div>
+            </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* ============================================
           OTT PLATFORMS SECTION
       ============================================ */}
       <section id="platforms" className="mx-auto max-w-7xl px-6 py-16">
-        <div className="text-center">
+        <motion.div 
+          className="text-center"
+          variants={headingVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           <div className="text-xs tracking-[3.5px] text-[#c5a46e]">WATCH ANYWHERE</div>
           <div className="mt-1 text-3xl font-semibold tracking-tight">Available on Premium Platforms</div>
-        </div>
+        </motion.div>
 
-        <div className="mt-9 flex flex-wrap justify-center gap-3">
-          {platformsData.map((platform: any) => (
-            <div 
+        <motion.div 
+          className="mt-9 flex flex-wrap justify-center gap-3"
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+        >
+          {platformsData.map((platform: any, idx: number) => (
+            <motion.div 
               key={platform.name} 
+              variants={cardVariants}
+              whileHover={{ y: -3, transition: { duration: 0.2 } }}
               onClick={() => {
                 setActivePlatform(platform.name);
                 document.getElementById('timeline')?.scrollIntoView({ behavior: 'smooth' });
@@ -640,9 +807,9 @@ export default function MarvelverseTimeline() {
             >
               <PlatformLogo name={platform.name} className="h-4 w-4" />
               {platform.name}
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
         <p className="mt-4 text-center text-xs text-white/50">Click a platform to filter the entire timeline</p>
       </section>
 

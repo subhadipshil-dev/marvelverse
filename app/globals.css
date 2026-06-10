@@ -340,28 +340,46 @@ body {
   border-radius: 999px;
 }
 
-/* Filter container fixed only in landscape mode */
+/* ============================================
+   FILTER / SEARCH CONTAINER — MUST STAY STATIC
+   This area is EXCLUDED from all scroll animations, docking, morphing, or layout transforms.
+   It must remain in normal document flow, full-width horizontal layout.
+   Positioned exactly below the featured section and above the timeline.
+   DO NOT turn this into a sidebar, rail, fixed panel, or floating element.
+   DO NOT apply position: fixed, layoutId, AnimatePresence, or any scroll-linked styles here.
+   Only the content BELOW (timeline cards, sections, posters, headings) may animate on scroll.
+   ============================================ */
+
 .filter-container {
-  /* base styles preserved from component */
+  /* Base styles only. The component itself provides glass, padding, etc.
+     Keep any transitions strictly internal (hover states, focus) — never layout or position. */
+  transition: background-color 120ms ease, border-color 120ms ease, opacity 120ms ease;
 }
 
+.filter-container:focus-within {
+  /* Subtle focus feedback only */
+  opacity: 1;
+}
+
+/* Protective rule: ensure no media query or other rule can accidentally promote this to fixed/sidebar.
+   If any future rule tries to position it, these act as a reset for normal flow. */
 @media (orientation: landscape) {
   .filter-container {
-    position: fixed;
-    left: 0;
-    top: 100px; /* below navbar */
-    width: 280px;
-    z-index: 50;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
-    max-height: calc(100vh - 120px);
-    overflow-y: auto;
-  }
-
-  /* Make space for the fixed sidebar in landscape - adjust timeline content */
-  #timeline {
-    padding-left: 300px;
+    /* Explicitly keep normal flow + full width behavior in landscape.
+       The horizontal layout must be preserved exactly as designed. */
+    position: static;
+    width: 100%;
+    left: auto;
+    top: auto;
+    max-height: none;
+    overflow-y: visible;
+    box-shadow: none; /* the glass component handles its own subtle border/shadow */
   }
 }
+
+/* Note: The actual wrapper in JSX is a plain div with "mx-auto max-w-7xl px-6 pb-6".
+   No additional classes or motion wrappers are (or should be) applied to it.
+   This area must never participate in scroll-triggered layout changes. */
 
 /* Light sweep effect on card */
 .movie-card::before {
@@ -633,4 +651,99 @@ body {
     padding: 12px 22px;
     font-size: 14px;
   }
+}
+
+/* ============================================
+   ACCESSIBILITY + REDUCED MOTION (per spec)
+   Minimize/disable non-essential animations.
+   Keep site usable and comfortable.
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Kill continuous/looping */
+  .timeline-pulse,
+  canvas[ class*="ParticleField" ] {
+    animation: none !important;
+    display: none !important; /* hide heavy canvas particles */
+  }
+
+  /* Soften but keep essential feedback */
+  .btn-primary:hover,
+  .btn-secondary:hover,
+  .movie-card:hover {
+    transform: none !important;
+  }
+
+  /* Allow very fast opacity for state (e.g. active pill, hovers) */
+  .filter-chip.active,
+  .platform-badge {
+    transition: opacity 80ms linear, background-color 80ms linear, border-color 80ms linear;
+  }
+}
+
+/* Motion-safe helpers (use on elements that should still move even in some contexts) */
+.motion-safe {
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+              opacity 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-safe {
+    transition: none !important;
+  }
+}
+
+/* ============================================
+   PREMIUM SECTION HEADING UNDERLINE SWEEP
+   Elegant, cinematic, not flashy. Triggered on view via framer or appears naturally.
+   ============================================ */
+.section-title {
+  position: relative;
+  display: inline-block;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 52px;
+  height: 2px;
+  background: linear-gradient(to right, var(--red-primary), var(--gold));
+  transition: width 620ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Optional: add .section-title.in-view to sweep the underline on scroll if desired via JS */
+.section-title.in-view::after {
+  width: 68px;
+}
+
+/* Subtle blur-to-sharp reveal utility (apply to containers that fade in) */
+.blur-to-sharp {
+  filter: blur(6px);
+  transition: filter 620ms cubic-bezier(0.23, 1, 0.32, 1), opacity 620ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.blur-to-sharp.in-view {
+  filter: blur(0);
+}
+
+/* Gentle card lift on enter (used via framer whileHover + initial) */
+.card-lift {
+  transition: transform 280ms cubic-bezier(0.23, 1, 0.32, 1),
+              box-shadow 280ms cubic-bezier(0.23, 1, 0.32, 1),
+              border-color 200ms linear;
+}
+
+.card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 70px -18px rgb(0 0 0 / 0.65);
 }

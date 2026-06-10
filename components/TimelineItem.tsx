@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Play, Download, Info, Star, Clock, Calendar } from 'lucide-react';
 import { Movie } from '@/types/movie';
 import { PlatformLogo } from './PlatformLogo';
@@ -18,6 +19,8 @@ export function TimelineItem({
   onWatch, 
   onDownload 
 }: TimelineItemProps) {
+  const shouldReduceMotion = useReducedMotion();
+
   const handleDownload = (e: React.MouseEvent) => {
     e.stopPropagation();
     onDownload(movie);
@@ -33,8 +36,13 @@ export function TimelineItem({
     onDetails(movie);
   };
 
+  // Premium scroll entry - elegant, not flashy. Stagger happens naturally via scroll order + parent list.
+  const cardTransition = shouldReduceMotion 
+    ? { duration: 0.2 } 
+    : { type: "spring" as const, stiffness: 65, damping: 17 };
+
   return (
-    <div 
+    <motion.div 
       onClick={() => onDetails(movie)}
       className="group relative flex w-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#0a0a0a] transition-all duration-300 hover:border-white/20 hover:shadow-[0_25px_80px_-20px_rgb(0,0,0,0.7)] md:flex-row md:items-start focus:outline-none focus-visible:ring-1 focus-visible:ring-[#c8102e]/50"
       role="button"
@@ -45,10 +53,21 @@ export function TimelineItem({
           onDetails(movie);
         }
       }}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 36, scale: 0.985 }}
+      whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, amount: 0.18 }}
+      transition={cardTransition}
+      whileHover={shouldReduceMotion ? undefined : { y: -3 }}
     >
-      {/* LEFT: POSTER - Fixed width, 2:3, fully visible */}
+      {/* LEFT: POSTER - Fixed width, 2:3, fully visible. Gentle zoom/float on entry */}
       <div className="relative w-full flex-shrink-0 overflow-hidden bg-[#050505] p-3 md:w-[240px] lg:w-[260px] xl:w-[280px]">
-        <div className="relative aspect-[2/3] w-full overflow-hidden rounded-2xl border border-white/10 bg-black">
+        <motion.div 
+          className="relative aspect-[2/3] w-full overflow-hidden rounded-2xl border border-white/10 bg-black"
+          initial={shouldReduceMotion ? false : { scale: 0.96 }}
+          whileInView={shouldReduceMotion ? undefined : { scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
+        >
           <img
             src={movie.thumbnail}
             alt={movie.title}
@@ -56,7 +75,7 @@ export function TimelineItem({
           />
           {/* Subtle inner frame for premium feel */}
           <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/[0.08]" />
-        </div>
+        </motion.div>
 
         {/* Small phase badge on poster */}
         <div className="absolute left-5 top-5 z-10 rounded-full bg-black/80 px-2.5 py-0.5 text-[10px] font-medium tracking-[1px] text-white/90 backdrop-blur">
@@ -136,6 +155,6 @@ export function TimelineItem({
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

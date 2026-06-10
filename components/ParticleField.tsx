@@ -1,13 +1,21 @@
 "use client";
 
 import React, { useEffect, useRef } from 'react';
+import { useReducedMotion } from 'framer-motion';
 
 export function ParticleField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    // Respect reduced motion: render nothing / skip loop
+    if (shouldReduceMotion) {
+      canvas.style.display = 'none';
+      return;
+    }
 
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
