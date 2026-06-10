@@ -55,99 +55,7 @@ function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: strin
   );
 }
 
-// 3D Hero Carousel
-function HeroCarousel({ movies, onMovieSelect }: { movies: Movie[]; onMovieSelect: (m: Movie) => void }) {
-  const [activeIndex, setActiveIndex] = React.useState(2);
-  const featured = movies.slice(0, 7);
 
-  const goTo = (idx: number) => {
-    setActiveIndex((idx + featured.length) % featured.length);
-  };
-
-  // Auto-advance
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % featured.length);
-    }, 4800);
-    return () => clearInterval(interval);
-  }, [featured.length]);
-
-  const getPosition = (idx: number) => {
-    const diff = (idx - activeIndex + featured.length) % featured.length;
-    if (diff === 0) return 'center';
-    if (diff === 1 || diff === featured.length - 1) return diff === 1 ? 'right' : 'left';
-    return diff === 2 || diff === featured.length - 2 ? (diff === 2 ? 'far-right' : 'far-left') : 'far';
-  };
-
-  return (
-    <div className="relative flex h-[420px] items-center justify-center overflow-hidden md:h-[520px]">
-      <div className="relative flex h-[310px] w-full max-w-[1080px] items-center justify-center md:h-[390px]">
-        {featured.map((movie, idx) => {
-          const pos = getPosition(idx);
-          const isCenter = pos === 'center';
-
-          return (
-            <motion.div
-              key={movie.id}
-              className={cn(
-                "poster-3d absolute cursor-pointer overflow-hidden rounded-3xl border border-white/10 bg-[#0a0a0a]",
-                pos === 'center' && "center h-[300px] w-[210px] md:h-[360px] md:w-[250px]",
-                pos === 'left' && "left h-[250px] w-[175px] md:h-[300px] md:w-[205px]",
-                pos === 'right' && "right h-[250px] w-[175px] md:h-[300px] md:w-[205px]",
-                pos === 'far-left' && "far-left h-[200px] w-[140px] md:h-[240px] md:w-[165px]",
-                pos === 'far-right' && "far-right h-[200px] w-[140px] md:h-[240px] md:w-[165px]",
-                pos === 'far' && "hidden"
-              )}
-              onClick={() => {
-                if (isCenter) {
-                  onMovieSelect(movie);
-                } else {
-                  goTo(idx);
-                }
-              }}
-              whileHover={isCenter ? { scale: 1.01 } : {}}
-            >
-              {/* Premium framed poster for 3D carousel */}
-              <div className="absolute inset-0 bg-[#050505]">
-                <div className="absolute inset-0 bg-[radial-gradient(#161618_0.6px,transparent_1px)] bg-[length:3.5px_3.5px] opacity-60" />
-                <div className="absolute inset-0 flex items-center justify-center p-2.5">
-                  <img 
-                    src={movie.thumbnail} 
-                    alt={movie.title}
-                    className="max-h-full max-w-full object-contain"
-                  />
-                </div>
-                <div className="absolute inset-0 rounded-3xl ring-1 ring-inset ring-white/[0.06]" />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/40 to-black/70" />
-              </div>
-              
-              {isCenter && (
-                <div className="absolute bottom-0 left-0 right-0 z-10 p-5">
-                  <div className="text-[11px] tracking-[2px] text-[#c5a46e]">{movie.phase} • {movie.timelineYear}</div>
-                  <div className="mt-0.5 text-lg font-semibold leading-tight tracking-tight text-white">{movie.title}</div>
-                </div>
-              )}
-            </motion.div>
-          );
-        })}
-      </div>
-
-      {/* Carousel Controls */}
-      <div className="absolute bottom-8 left-1/2 z-30 flex -translate-x-1/2 gap-2">
-        {featured.map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => goTo(idx)}
-            className={cn(
-              "h-px w-7 transition-all",
-              idx === activeIndex ? "bg-[#c8102e]" : "bg-white/20 hover:bg-white/40"
-            )}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
 
 // Main Page
 export default function MarvelverseTimeline() {
@@ -159,10 +67,10 @@ export default function MarvelverseTimeline() {
   const [minRating, setMinRating] = useState(0);
   const [sortBy, setSortBy] = useState<"timeline" | "rating" | "release" | "alpha">("timeline");
 
-  // Docking state for filter system transformation
-  const [isDocked, setIsDocked] = useState(false);
-  const timelineSectionRef = React.useRef<HTMLElement>(null);
-  const filterWrapperRef = React.useRef<HTMLDivElement>(null);
+  // Hero current movie state for dynamic hero
+  const [currentHeroMovie, setCurrentHeroMovie] = useState(
+    movies.find((m) => m.id === "avengers-endgame") || movies[0]
+  );
 
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -307,33 +215,6 @@ export default function MarvelverseTimeline() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // IntersectionObserver on the filter bar itself: dock only when the horizontal filter reaches the top of the viewport
-  React.useEffect(() => {
-    const navbarHeight = 80; // approx height of top nav
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // When the top of the filter bar is at or above the navbar, switch to sidebar mode
-        const filterTop = entry.boundingClientRect.top;
-        const shouldDock = filterTop <= navbarHeight;
-        setIsDocked(shouldDock);
-      },
-      {
-        threshold: [0, 0.01, 1],
-        rootMargin: `-${navbarHeight}px 0px 0px 0px`,
-      }
-    );
-
-    const current = filterWrapperRef.current;
-    if (current) {
-      observer.observe(current);
-    }
-
-    return () => {
-      if (current) observer.unobserve(current);
-    };
-  }, []);
-
   // Featured movie of the week (deterministic but nice)
   const featuredMovie = movies.find(m => m.id === "avengers-endgame") || movies[21];
 
@@ -375,71 +256,185 @@ export default function MarvelverseTimeline() {
       </nav>
 
       {/* ============================================
-          HERO — FULL CINEMATIC EXPERIENCE
+          HERO — PREMIUM CINEMATIC EXPERIENCE
       ============================================ */}
-      <section className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden border-b border-white/10 pt-12">
-        {/* Deep background layers */}
-        <div className="absolute inset-0 bg-[#050505]" />
-        <div className="energy-field" />
+      <section className="relative h-[92vh] overflow-hidden border-b border-white/10">
+        {/* Dynamic Background with Ken Burns slow zoom and fade on change */}
+        <motion.div
+          key={currentHeroMovie.id}
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${currentHeroMovie.thumbnail})` }}
+          initial={{ opacity: 0, scale: 1.1 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+        >
+          {/* Slow zoom animation layer */}
+          <motion.div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${currentHeroMovie.thumbnail})` }}
+            animate={{ scale: [1, 1.08] }}
+            transition={{ duration: 25, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+          />
+        </motion.div>
+
+        {/* Cinematic dark gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/95 to-[#050505]/60" />
+        
+        {/* Red ambient lighting */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_40%,rgba(200,16,46,0.18),transparent_60%)]" />
+
+        {/* Subtle particle field for cinematic feel */}
         <ParticleField />
 
-        {/* Ambient red glows */}
-        <div className="absolute left-1/4 top-[12%] h-[520px] w-[520px] rounded-full bg-[#c8102e] opacity-[0.035] blur-[120px]" />
-        <div className="absolute right-1/4 bottom-[18%] h-[380px] w-[380px] rounded-full bg-[#c5a46e] opacity-[0.025] blur-[140px]" />
-
-        <div className="relative z-20 mx-auto max-w-5xl px-6 text-center">
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1 text-xs tracking-[3px] text-[#c5a46e]">
-            MARVEL CINEMATIC UNIVERSE • CHRONOLOGICAL EDITION
-          </div>
-
-          <h1 className="heading-display mx-auto max-w-5xl text-6xl font-semibold tracking-[-3.4px] md:text-[86px] md:leading-[82px]">
-            MARVELVERSE<br />TIMELINE
-          </h1>
-          <p className="mx-auto mt-5 max-w-lg text-balance text-xl text-white/70 md:text-2xl">
-            The definitive premium experience for the Marvel Cinematic Universe.<br className="hidden md:block" /> In perfect chronological order.
-          </p>
-
-          {/* Hero CTAs */}
-          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <button 
-              onClick={scrollToTimeline} 
-              className="btn btn-primary w-full px-10 py-4 text-base sm:w-auto"
-            >
-              EXPLORE THE TIMELINE <ChevronDown className="ml-1 h-4 w-4" />
-            </button>
-            <button 
-              onClick={() => openMovie(featuredMovie)} 
-              className="btn btn-secondary w-full px-8 py-4 text-base sm:w-auto"
-            >
-              <Play className="mr-2 h-4 w-4" /> START WITH ENDGAME
-            </button>
-          </div>
-
-          {/* Animated Stats */}
-          <div id="stats" className="mx-auto mt-16 grid max-w-3xl grid-cols-2 gap-px border-t border-white/10 pt-8 md:grid-cols-4">
-            {[
-              { label: "MOVIES", value: totalMovies, suffix: "" },
-              { label: "AVG RATING", value: parseFloat(avgRating), suffix: "" },
-              { label: "PHASES", value: totalPhases, suffix: "" },
-              { label: "PLATFORMS", value: platformsCount, suffix: "" },
-            ].map((stat, i) => (
-              <div key={i} className="border-r border-white/10 px-6 py-4 text-center last:border-r-0 md:border-r">
-                <div className="text-4xl font-semibold tracking-[-1.5px] text-white tabular-nums">
-                  <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+        <div className="relative z-10 h-full max-w-7xl mx-auto px-6 flex flex-col">
+          {/* Main content grid: Left info + Right poster */}
+          <div className="flex-1 flex flex-col lg:flex-row items-center justify-between gap-8 pt-12 pb-8">
+            {/* LEFT: Movie info */}
+            <div className="flex-1 max-w-2xl space-y-5">
+              {/* Badges */}
+              <div className="flex flex-wrap gap-3">
+                <div className="inline-flex items-center rounded-full bg-[#c8102e]/90 px-4 py-1 text-xs font-semibold tracking-[2px] text-white">
+                  {currentHeroMovie.phase}
                 </div>
-                <div className="mt-1 text-[10px] uppercase tracking-[3px] text-white/50">{stat.label}</div>
+                <div className="inline-flex items-center rounded-full border border-white/20 bg-white/5 px-4 py-1 text-xs font-medium tracking-[1px] text-white/90">
+                  {currentHeroMovie.timelineYear}
+                </div>
               </div>
-            ))}
+
+              {/* Large Title */}
+              <h1 className="text-5xl md:text-7xl font-semibold tracking-[-2.5px] leading-[0.95] text-white">
+                {currentHeroMovie.title}
+              </h1>
+
+              {/* Meta row */}
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/70">
+                <div className="flex items-center gap-1.5 text-[#c5a46e] font-semibold">
+                  <Star className="h-4 w-4 fill-current" /> {currentHeroMovie.imdbRating} IMDb
+                </div>
+                <div>{currentHeroMovie.runtime}</div>
+                <div>{currentHeroMovie.releaseYear}</div>
+              </div>
+
+              {/* Synopsis */}
+              <p className="max-w-xl text-[15px] leading-relaxed text-white/80 line-clamp-4">
+                {currentHeroMovie.synopsis}
+              </p>
+
+              {/* Available Platforms */}
+              <div>
+                <div className="text-xs uppercase tracking-[2px] text-white/40 mb-2">Available on</div>
+                <div className="flex flex-wrap gap-2">
+                  {currentHeroMovie.ottPlatforms.map((platform) => (
+                    <div key={platform} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs">
+                      <PlatformLogo name={platform} className="h-3.5 w-3.5" />
+                      <span className="text-white/80">{platform}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* CTAs */}
+              <div className="flex flex-wrap gap-4 pt-2">
+                <button 
+                  onClick={() => openMovie(currentHeroMovie)} 
+                  className="btn btn-primary px-8 py-3.5 text-base"
+                >
+                  EXPLORE MOVIE
+                </button>
+                <button 
+                  onClick={scrollToTimeline} 
+                  className="btn btn-secondary px-8 py-3.5 text-base border-white/20"
+                >
+                  VIEW TIMELINE POSITION
+                </button>
+              </div>
+            </div>
+
+            {/* RIGHT: Large featured poster with float and glow */}
+            <div className="relative hidden lg:block flex-shrink-0">
+              {/* Glow behind poster */}
+              <div className="absolute -inset-8 bg-[#c8102e] opacity-20 blur-[60px] rounded-full" />
+              
+              <motion.div
+                key={currentHeroMovie.id}
+                className="relative w-[340px] aspect-[2/3] rounded-3xl overflow-hidden border border-white/10 shadow-[0_30px_80px_-15px_rgb(0,0,0,0.8)]"
+                initial={{ opacity: 0, x: 60, rotateY: 8 }}
+                animate={{ opacity: 1, x: 0, rotateY: 0 }}
+                whileHover={{ scale: 1.015, rotateY: -2 }}
+                transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+              >
+                <img 
+                  src={currentHeroMovie.thumbnail} 
+                  alt={currentHeroMovie.title} 
+                  className="h-full w-full object-cover"
+                />
+                {/* Cinematic inner shadow */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent" />
+              </motion.div>
+            </div>
+          </div>
+
+          {/* Redesigned Top Stats as glass cards below title area */}
+          <div className="pb-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {[
+                { label: "MOVIES", value: totalMovies },
+                { label: "AVG RATING", value: parseFloat(avgRating) },
+                { label: "PHASES", value: totalPhases },
+                { label: "PLATFORMS", value: platformsCount },
+              ].map((stat, i) => (
+                <div key={i} className="glass rounded-2xl border border-white/10 p-5 flex items-center gap-4">
+                  <div className="text-3xl font-semibold tracking-[-1px] text-white tabular-nums">
+                    <AnimatedCounter value={stat.value} />
+                  </div>
+                  <div className="text-xs uppercase tracking-[2px] text-white/50 leading-tight">{stat.label}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* 3D Cinematic Poster Carousel */}
-        <div className="relative z-20 mt-auto w-full pt-10">
-          <HeroCarousel movies={movies} onMovieSelect={openMovie} />
-        </div>
-
-        <div className="absolute bottom-8 z-30 hidden text-[10px] tracking-[3px] text-white/40 md:block">
-          SCROLL TO BEGIN YOUR JOURNEY
+        {/* BOTTOM: Interactive Movie Carousel */}
+        <div className="absolute bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-[#050505] via-[#050505]/95 to-transparent pt-12 pb-6">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-xs uppercase tracking-[2.5px] text-white/40 mb-3">EXPLORE THE COLLECTION</div>
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
+              {movies.slice(0, 7).map((movie) => {
+                const isActive = currentHeroMovie.id === movie.id;
+                return (
+                  <motion.button
+                    key={movie.id}
+                    onClick={() => setCurrentHeroMovie(movie)}
+                    className={cn(
+                      "flex-shrink-0 snap-start rounded-2xl overflow-hidden border transition-all duration-300",
+                      isActive 
+                        ? "border-[#c8102e] w-28 md:w-32 ring-1 ring-[#c8102e]/40" 
+                        : "border-white/10 w-20 md:w-24 opacity-70 hover:opacity-100"
+                    )}
+                    whileHover={{ scale: isActive ? 1.02 : 1.05 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className="relative aspect-[2/3]">
+                      <img 
+                        src={movie.thumbnail} 
+                        alt={movie.title} 
+                        className="absolute inset-0 h-full w-full object-cover" 
+                      />
+                      {isActive && (
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#c8102e]/30 to-transparent" />
+                      )}
+                    </div>
+                    {isActive && (
+                      <div className="px-2 py-1 text-[10px] text-center text-white/90 truncate bg-black/50">
+                        {movie.title.split(":")[0]}
+                      </div>
+                    )}
+                  </motion.button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -497,12 +492,9 @@ export default function MarvelverseTimeline() {
       {/* ============================================
           TIMELINE + MOVIE GRID
       ============================================ */}
-      {/* SINGLE FilterSystem rendered once in its original top horizontal position.
-          The same element transforms (width compress, layout rotate to vertical, becomes sticky left) when the bar itself reaches the top (observer on wrapper).
-          layoutId + layout prop on root enables the visible physical docking animation. */}
-      <div ref={filterWrapperRef} className="mx-auto max-w-7xl px-6 pb-6">
+      {/* SINGLE FilterSystem component - horizontal layout, no animations. Container is fixed only in landscape mode via CSS. */}
+      <div className="mx-auto max-w-7xl px-6 pb-6">
         <FilterSystem
-          docked={isDocked}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           activePhase={activePhase}
@@ -521,10 +513,9 @@ export default function MarvelverseTimeline() {
       ============================================ */}
       <section 
         id="timeline" 
-        ref={timelineSectionRef as any}
         className="mx-auto max-w-7xl px-6 pb-20 pt-8"
       >
-        {/* Timeline content - remains centered. The sidebar will appear to the left of this centered area via the filter's negative margin when docked. */}
+        {/* Timeline content remains centered. */}
         <div>
             {/* Header */}
             <div className="mb-9 flex items-end justify-between">
@@ -561,8 +552,8 @@ export default function MarvelverseTimeline() {
 
                   return (
                     <div key={movie.id} className="relative">
-                      {/* Year Marker (only in horizontal mode) */}
-                      {showYearMarker && !isDocked && (
+                      {/* Year Marker */}
+                      {showYearMarker && (
                         <div className="absolute -left-10 top-3 z-20 flex items-center gap-3 md:-left-14">
                           <div className="rounded-full bg-[#c8102e] px-3.5 py-1 text-xs font-semibold tracking-[1.5px] text-white shadow-md">
                             {movie.timelineYear}
@@ -571,7 +562,7 @@ export default function MarvelverseTimeline() {
                         </div>
                       )}
 
-                      <div className={isDocked ? "" : "ml-2 md:ml-4"}>
+                      <div className="ml-2 md:ml-4">
                         <TimelineItem
                           movie={movie}
                           onDetails={openMovie}

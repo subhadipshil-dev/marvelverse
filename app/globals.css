@@ -340,6 +340,29 @@ body {
   border-radius: 999px;
 }
 
+/* Filter container fixed only in landscape mode */
+.filter-container {
+  /* base styles preserved from component */
+}
+
+@media (orientation: landscape) {
+  .filter-container {
+    position: fixed;
+    left: 0;
+    top: 100px; /* below navbar */
+    width: 280px;
+    z-index: 50;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+  }
+
+  /* Make space for the fixed sidebar in landscape - adjust timeline content */
+  #timeline {
+    padding-left: 300px;
+  }
+}
+
 /* Light sweep effect on card */
 .movie-card::before {
   content: '';
