@@ -145,9 +145,7 @@ export default function MarvelverseTimeline() {
   const featuredPosterY = useTransform(pageScroll, [0.08, 0.32], [4, -14]);
   const featuredPosterScale = useTransform(pageScroll, [0.08, 0.32], [0.985, 1.012]);
 
-  // Cinematic scroll-reactive ambient lighting (orbs drift with scroll for premium moving light feel)
-  const { scrollYProgress: globalScroll } = useScroll();
-  const ambientIntensity = useTransform(globalScroll, [0, 0.12, 0.82, 1], [0.72, 1, 0.95, 0.78]);
+  // (No longer needed for background — kept minimal for any future subtle effects if required)
 
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -296,7 +294,7 @@ export default function MarvelverseTimeline() {
   const featuredMovie = movies.find(m => m.id === "avengers-endgame") || movies[21];
 
   return (
-    <div className="min-h-screen bg-[#050505] text-[#f5f5f5] selection:bg-[#c8102e] selection:text-white">
+    <div className="min-h-screen bg-[#0f0f14] text-[#f5f5f5] selection:bg-[#c8102e] selection:text-white">
       {/* ============================================
           CINEMATIC PREMIUM BACKGROUND LAYERS
           Layered ambient red + gold radials, scroll-reactive lighting,
@@ -304,67 +302,75 @@ export default function MarvelverseTimeline() {
           Feels like a Marvel Studios streaming title sequence.
       ============================================ */}
       <div className="fixed inset-0 -z-20 pointer-events-none overflow-hidden">
-        {/* Deep base */}
-        <div className="absolute inset-0 bg-[#050505]" />
+        {/* Soft dark charcoal base — richer and more comfortable than pure black */}
+        <div className="absolute inset-0 bg-[#0f0f14]" />
 
-        {/* === SCROLL-REACTIVE CINEMATIC LIGHTING ORBS === */}
-        {/* Red key light orb - drifts right slowly as you scroll (premium "studio light" movement) */}
-        <motion.div
-          className="absolute rounded-full"
-          style={{
-            left: '18%',
-            top: '12%',
-            width: '720px',
-            height: '720px',
-            background: 'rgba(200,16,46,0.11)',
-            filter: 'blur(140px)',
-            opacity: ambientIntensity,
-            x: useTransform(globalScroll, [0, 1], [0, 140]), // subtle right drift
-            transform: 'translate(-40%, -30%)',
-          }}
-        />
-
-        {/* Gold fill light orb - rises from bottom as you scroll, warm cinematic accent */}
-        <motion.div
-          className="absolute rounded-full"
-          style={{
-            right: '12%',
-            top: '62%',
-            width: '820px',
-            height: '820px',
-            background: 'rgba(197,164,110,0.075)',
-            filter: 'blur(160px)',
-            opacity: ambientIntensity,
-            y: useTransform(globalScroll, [0, 1], [80, -70]), // rises with scroll
-            transform: 'translate(30%, -25%)',
-          }}
-        />
-
-        {/* Subtle secondary red rim / back light for depth (right side) */}
+        {/* Layered ambient red glow — restrained, upper-left for subtle warmth and depth */}
         <div 
-          className="absolute rounded-full"
+          className="absolute inset-0" 
           style={{ 
-            right: '-8%',
-            bottom: '18%',
-            width: '620px',
-            height: '620px',
-            background: 'rgba(200,16,46,0.055)',
-            filter: 'blur(110px)',
-            transform: 'translate(25%, 30%)',
+            background: 'radial-gradient(ellipse at 28% 16%, rgba(200,16,46,0.055) 0%, transparent 52%)' 
           }} 
         />
 
-        {/* Very subtle cool top-down "projector" wash for premium title card feel */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_5%,rgba(255,255,255,0.018)_0%,transparent_55%)]" />
+        {/* Layered warm gold glow — lower-right, very soft for elegant richness */}
+        <div 
+          className="absolute inset-0" 
+          style={{ 
+            background: 'radial-gradient(ellipse at 68% 82%, rgba(197,164,110,0.042) 0%, transparent 56%)' 
+          }} 
+        />
 
-        {/* Bottom grounded shadow so timeline and lower content feel anchored in the "set" */}
-        <div className="absolute inset-x-0 bottom-0 h-[42%] bg-gradient-to-t from-[#050505]/75 via-[#050505]/25 to-transparent" />
+        {/* Gentle center light wash — soft atmospheric light behind hero/featured area */}
+        <div 
+          className="absolute inset-0" 
+          style={{ 
+            background: 'radial-gradient(ellipse at 50% 20%, rgba(232,225,210,0.018) 0%, transparent 65%)' 
+          }} 
+        />
 
-        {/* Global subtle ambient particle field across entire page (very faint, slow cinematic dust) */}
+        {/* Very soft ambient color blobs for organic depth (low opacity blur "glows" around sections) */}
+        <div 
+          className="absolute rounded-full" 
+          style={{ 
+            left: '8%', 
+            top: '8%', 
+            width: '520px', 
+            height: '520px', 
+            background: 'rgba(200,16,46,0.035)', 
+            filter: 'blur(180px)' 
+          }} 
+        />
+        <div 
+          className="absolute rounded-full" 
+          style={{ 
+            right: '6%', 
+            bottom: '22%', 
+            width: '580px', 
+            height: '580px', 
+            background: 'rgba(197,164,110,0.028)', 
+            filter: 'blur(200px)' 
+          }} 
+        />
+
+        {/* Subtle edge vignette — only at the very edges, not crushing the whole page */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_65%,rgba(0,0,0,0.28)_100%)]" />
+
+        {/* Faint textured noise/grain layer — prevents flatness while staying elegant and invisible at distance */}
+        <div 
+          className="absolute inset-0 opacity-[0.035] mix-blend-screen" 
+          style={{
+            backgroundImage: 'radial-gradient(#fff 0.6px, transparent 0.6px)',
+            backgroundSize: '3.5px 3.5px',
+            backgroundPosition: '0 0'
+          }} 
+        />
+
+        {/* Global subtle ambient particle field (very faint cinematic dust for life) */}
         <ParticleField 
           variant="ambient" 
           zIndex="z-[-1]" 
-          className="opacity-[0.65]" 
+          className="opacity-[0.55]" 
         />
       </div>
 
@@ -619,7 +625,7 @@ export default function MarvelverseTimeline() {
           FEATURED MOVIE OF THE WEEK (Premium Banner)
       ============================================ */}
       <motion.section 
-        className="border-b border-white/10 bg-[#0a0a0a]"
+        className="border-b border-white/10 bg-[#121218]"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, amount: 0.2 }}
@@ -790,7 +796,7 @@ export default function MarvelverseTimeline() {
           MCU STATISTICS DASHBOARD
       ============================================ */}
       <motion.section 
-        className="border-y border-white/10 bg-[#0a0a0a] py-14"
+        className="border-y border-white/10 bg-[#121218] py-14"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, amount: 0.3 }}

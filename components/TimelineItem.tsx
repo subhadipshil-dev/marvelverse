@@ -74,9 +74,9 @@ export function TimelineItem({
       whileHover={shouldReduceMotion ? undefined : { y: -3 }}
     >
       {/* LEFT: POSTER - Fixed width, 2:3, fully visible. Gentle zoom/float on entry */}
-      <div className="relative w-full flex-shrink-0 overflow-hidden bg-[#050505] p-3 md:w-[240px] lg:w-[260px] xl:w-[280px]">
+      <div className="relative w-full flex-shrink-0 md:w-[240px] lg:w-[260px] xl:w-[280px]">
         <motion.div 
-          className="relative aspect-[2/3] w-full overflow-hidden rounded-2xl border border-white/10 bg-black"
+          className="relative aspect-[2/3] w-full overflow-hidden rounded-2xl"
           initial={shouldReduceMotion ? false : { scale: 0.96 }}
           whileInView={shouldReduceMotion ? undefined : { scale: 1 }}
           viewport={{ once: true }}
@@ -85,10 +85,8 @@ export function TimelineItem({
           <img
             src={movie.thumbnail}
             alt={movie.title}
-            className="absolute inset-0 h-full w-full object-contain p-1"
+            className="absolute inset-0 h-full w-full object-cover rounded-2xl"
           />
-          {/* Subtle inner frame for premium feel */}
-          <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/[0.08]" />
         </motion.div>
 
         {/* Small phase badge on poster */}
