@@ -230,6 +230,12 @@ export default function MarvelverseTimeline() {
     setTimeout(() => setSelectedMovie(null), 320);
   };
 
+  // Support switching movies directly from inside the details view (cinematic "scene change")
+  const handleMovieChange = (newMovie: Movie) => {
+    setSelectedMovie(newMovie);
+    // Drawer stays open; the drawer component will scroll its content to top via its own effect
+  };
+
   const handleWatch = (movie: Movie) => {
     if (movie.watchUrl) {
       window.open(movie.watchUrl, '_blank');
@@ -957,6 +963,7 @@ export default function MarvelverseTimeline() {
         movie={selectedMovie} 
         isOpen={isDrawerOpen} 
         onClose={closeDrawer} 
+        onMovieChange={handleMovieChange}
       />
     </div>
   );
