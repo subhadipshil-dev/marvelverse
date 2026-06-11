@@ -20,7 +20,7 @@ interface FilterPanelProps {
 }
 
 const PHASE_OPTIONS = ['All', 'Phase 1', 'Phase 2', 'Phase 3', 'Phase 4', 'Phase 5'];
-const PLATFORM_LIST = ['Disney+', 'Netflix', 'Prime Video', 'JioHotstar', 'Sony LIV'];
+const PLATFORM_LIST = ['JioHotstar', 'Netflix', 'Prime Video', 'Sony LIV'];
 const SORT_OPTIONS = [
   { value: 'timeline', label: 'Timeline Order' },
   { value: 'rating', label: 'IMDb Rating' },

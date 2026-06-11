@@ -15,7 +15,7 @@ interface MovieCardProps {
 }
 
 /**
- * Netflix / Disney+ style PORTRAIT movie card.
+ * Netflix / JioHotstar style PORTRAIT movie card.
  * 
  * - Fixed portrait orientation
  * - Poster (2:3) dominates the top ~70%

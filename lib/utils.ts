@@ -20,7 +20,6 @@ export function getPhaseColor(phase: string): string {
 
 export function getPlatformColor(platform: string): string {
   const colors: Record<string, string> = {
-    "Disney+": "#113CCF",
     "Netflix": "#E50914",
     "Prime Video": "#00A8E1",
     "JioHotstar": "#0F1C3F",

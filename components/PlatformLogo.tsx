@@ -8,11 +8,10 @@ interface PlatformLogoProps {
 }
 
 const PLATFORM_LOGOS: Record<string, string> = {
-  "Disney+": "/logos/disneyplus.svg",
-  "Netflix": "/logos/netflix.svg",
-  "Prime Video": "/logos/primevideo.svg",
-  "JioHotstar": "/logos/jiohotstar.svg",
-  "Sony LIV": "/logos/sonyliv.svg",
+  "Netflix": "/logos/netflix.png",
+  "Prime Video": "/logos/primevideo.png",
+  "JioHotstar": "/logos/jiohotstar.png",
+  "Sony LIV": "/logos/sonyliv.png",
 };
 
 export function PlatformLogo({ name, className = "h-3.5 w-3.5" }: PlatformLogoProps) {
