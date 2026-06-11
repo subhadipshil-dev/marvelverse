@@ -695,7 +695,7 @@ export default function MarvelverseTimeline() {
           Full-width horizontal layout, below featured and above timeline.
           EXCLUDED from all scroll animations and layout transforms.
           Do not wrap in motion, do not add special classes for docking/sidebar. */}
-      <div className="mx-auto max-w-7xl px-6 pb-6">
+      <div className="mx-auto max-w-[1400px] px-6 mt-10 pb-16">
         <FilterSystem
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
@@ -799,138 +799,235 @@ export default function MarvelverseTimeline() {
       </section>
 
       {/* ============================================
-          MCU STATISTICS DASHBOARD
+          MCU INSIGHTS SHOWCASE
+          Combined premium cinematic stats + platforms panel
       ============================================ */}
-      <motion.section 
-        className="border-y border-white/10 bg-[#121218] py-14"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className="mx-auto max-w-7xl px-6">
-          <motion.div 
-            className="mb-8 text-center"
-            variants={headingVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            <div className="text-xs tracking-[3.5px] text-[#c5a46e]">THE UNIVERSE AT A GLANCE</div>
-            <div className="mt-1 text-3xl font-semibold tracking-[-1px]">MCU by the Numbers</div>
-          </motion.div>
+      <section id="platforms" className="relative border-y border-white/10 bg-[#0a0a0a] py-16 overflow-hidden">
+        {/* Subtle cinematic background orb for depth */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(200,16,46,0.06),transparent_60%)] pointer-events-none" />
 
-          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
-            {phasesData.map((phase: any, idx: number) => (
+        <div className="relative mx-auto max-w-7xl px-6">
+          {/* Shared Premium Header */}
+          <div className="text-center mb-10">
+            <div className="text-xs tracking-[3.5px] text-[#c5a46e]">THE UNIVERSE AT A GLANCE</div>
+            <div className="mt-1 text-3xl font-semibold tracking-tight">MCU Insights</div>
+          </div>
+
+          <div className="grid lg:grid-cols-12 gap-8">
+            {/* LEFT: MCU by the Numbers - Premium Dashboard Style */}
+            <div className="lg:col-span-7">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <div className="text-xs uppercase tracking-[2.5px] text-[#c5a46e]">MCU BY THE NUMBERS</div>
+                  <div className="text-xl font-semibold tracking-tight">Phases & Highlights</div>
+                </div>
+                {/* Subtle total films highlight */}
+                <div className="hidden md:block text-right">
+                  <div className="text-[10px] tracking-[2px] text-white/50">TOTAL FILMS</div>
+                  <div className="text-3xl font-semibold tabular-nums text-white">
+                    <AnimatedCounter value={phasesData.reduce((sum: number, p: any) => sum + p.movies, 0)} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Phase Cards - tighter, more interesting with color accents and progress */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-4">
+                {phasesData.map((phase: any, idx: number) => {
+                  const maxMovies = Math.max(...phasesData.map((p: any) => p.movies));
+                  const progress = Math.round((phase.movies / maxMovies) * 100);
+                  return (
+                    <motion.div 
+                      key={idx} 
+                      className="glass rounded-2xl p-5 cinematic-spotlight group relative overflow-hidden border border-white/10"
+                      variants={cardVariants}
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true, amount: 0.2 }}
+                      whileHover={{ y: -6, transition: { duration: 0.2 } }}
+                    >
+                      {/* Color accent bar */}
+                      <div 
+                        className="absolute top-0 left-0 h-1 w-full" 
+                        style={{ background: phase.color }} 
+                      />
+                      
+                      <div className="text-xs tracking-widest text-white/50 mb-1">{phase.name}</div>
+                      <div className="text-4xl font-semibold tracking-[-1.5px] text-white tabular-nums">
+                        <AnimatedCounter value={phase.movies} />
+                      </div>
+                      <div className="text-sm text-white/60">films</div>
+
+                      {/* Faint progress bar for visual energy */}
+                      <div className="mt-3 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full rounded-full transition-all duration-700 group-hover:brightness-125" 
+                          style={{ 
+                            width: `${progress}%`, 
+                            background: phase.color 
+                          }} 
+                        />
+                      </div>
+                      <div className="text-[10px] text-white/40 mt-1">{progress}% of peak phase</div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+
+              {/* Featured Highlight Card - larger, cinematic, with glow */}
               <motion.div 
-                key={idx} 
-                className="glass rounded-2xl p-6 cinematic-spotlight"
+                className="glass rounded-3xl p-6 md:p-7 border border-white/10 cinematic-spotlight relative overflow-hidden"
                 variants={cardVariants}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.2 }}
                 whileHover={{ y: -4, transition: { duration: 0.2 } }}
               >
-                <div className="text-xs tracking-widest text-white/50">{phase.name}</div>
-                <div className="mt-2 text-5xl font-semibold tracking-[-1.5px] text-white">{phase.movies}</div>
-                <div className="mt-1 text-sm text-white/60">films</div>
+                {/* Subtle red ambient glow inside */}
+                <div className="absolute -right-10 -top-10 w-40 h-40 bg-[#c8102e]/10 rounded-full blur-3xl" />
+
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div>
+                    <div className="text-xs tracking-[2.5px] text-[#c5a46e]">HIGHEST RATED</div>
+                    <div className="mt-2 text-2xl md:text-3xl font-semibold tracking-tight leading-tight">
+                      Avengers: Infinity War &amp; Endgame
+                    </div>
+                    <div className="mt-1 text-sm text-white/60">Tied for the pinnacle of the MCU</div>
+                  </div>
+                  <div className="text-6xl md:text-7xl font-semibold text-[#c5a46e] tracking-[-2px] tabular-nums">
+                    8.4
+                  </div>
+                </div>
               </motion.div>
-            ))}
-            <motion.div 
-              className="glass col-span-1 flex flex-col justify-between rounded-2xl p-6 md:col-span-2 lg:col-span-1 cinematic-spotlight"
-              variants={cardVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-            >
-              <div>
-                <div className="text-xs tracking-widest text-white/50">HIGHEST RATED</div>
-                <div className="mt-3 text-[22px] font-semibold leading-none tracking-tight">Avengers: Infinity War &amp; Endgame</div>
+            </div>
+
+            {/* RIGHT: Available on Premium Platforms - Featured Experience Panel */}
+            <div className="lg:col-span-5">
+              <div className="glass-strong rounded-3xl p-7 border border-white/10 h-full flex flex-col">
+                <div>
+                  <div className="text-xs tracking-[3.5px] text-[#c5a46e]">WATCH ANYWHERE</div>
+                  <div className="mt-1 text-2xl font-semibold tracking-tight">Available on Premium Platforms</div>
+                  <p className="mt-2 text-sm text-white/70">Where to watch the MCU in style</p>
+                </div>
+
+                {/* Elegant platform panel with larger, richer badges */}
+                <div className="mt-auto pt-6">
+                  <motion.div 
+                    className="flex flex-wrap gap-3"
+                    variants={staggerContainer}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.2 }}
+                  >
+                    {platformsData.map((platform: any, idx: number) => (
+                      <motion.button 
+                        key={platform.name} 
+                        variants={cardVariants}
+                        whileHover={{ scale: 1.02, y: -2 }}
+                        whileTap={{ scale: 0.985 }}
+                        onClick={() => {
+                          setActivePlatform(platform.name);
+                          document.getElementById('timeline')?.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                        className="group flex-1 min-w-[140px] flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.015] px-4 py-3 text-left transition-all hover:border-[#c8102e]/40 hover:bg-white/[0.03]"
+                        style={{ 
+                          borderColor: `${platform.color}30`,
+                        }}
+                      >
+                        <div className="flex-shrink-0">
+                          <PlatformLogo name={platform.name} className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <div className="font-medium text-sm tracking-tight text-white group-hover:text-[#c5a46e] transition-colors">
+                            {platform.name}
+                          </div>
+                          <div className="text-[10px] text-white/50">Premium</div>
+                        </div>
+                      </motion.button>
+                    ))}
+                  </motion.div>
+                  <p className="mt-4 text-center text-[10px] text-white/50 tracking-widest">Click any platform to filter the timeline instantly</p>
+                </div>
               </div>
-              <div className="mt-6 text-4xl font-semibold text-[#c5a46e] tracking-[-1px]">8.4</div>
-            </motion.div>
+            </div>
           </div>
         </div>
-      </motion.section>
-
-      {/* ============================================
-          OTT PLATFORMS SECTION
-      ============================================ */}
-      <section id="platforms" className="mx-auto max-w-7xl px-6 py-16">
-        <motion.div 
-          className="text-center"
-          variants={headingVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          <div className="text-xs tracking-[3.5px] text-[#c5a46e]">WATCH ANYWHERE</div>
-          <div className="mt-1 text-3xl font-semibold tracking-tight">Available on Premium Platforms</div>
-        </motion.div>
-
-        <motion.div 
-          className="mt-9 flex flex-wrap justify-center gap-3"
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-        >
-          {platformsData.map((platform: any, idx: number) => (
-            <motion.div 
-              key={platform.name} 
-              variants={cardVariants}
-              whileHover={{ y: -3, transition: { duration: 0.2 } }}
-              onClick={() => {
-                setActivePlatform(platform.name);
-                document.getElementById('timeline')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="inline-flex cursor-pointer items-center gap-2.5 rounded-full border px-5 py-2.5 text-sm font-medium transition-all hover:border-[#c8102e]/50 hover:text-white active:scale-[0.985]"
-              style={{ 
-                background: `${platform.color}10`, 
-                borderColor: `${platform.color}30`,
-                color: 'white'
-              }}
-            >
-              <PlatformLogo name={platform.name} className="h-4 w-4" />
-              {platform.name}
-            </motion.div>
-          ))}
-        </motion.div>
-        <p className="mt-4 text-center text-xs text-white/50">Click a platform to filter the entire timeline</p>
       </section>
 
       {/* ============================================
-          FINAL CTA + FOOTER
+          CINEMATIC PREMIUM FOOTER
       ============================================ */}
-      <footer className="border-t border-white/10 bg-black/60 py-16 text-center text-sm text-white/50">
-        <div className="mx-auto max-w-md px-6">
-          <div className="mb-2 flex justify-center">
-            <img src="/favicon.ico" alt="MarvelVerse Logo" className="h-8 w-8 rounded-xl" />
-          </div>
-          <div className="font-semibold tracking-tight text-white text-lg">MARVELVERSE TIMELINE</div>
-          <p className="mt-2 text-xs leading-relaxed">
-            A premium fan experience. Not affiliated with Marvel Studios or Disney.<br />
-            All links are placeholders and will be populated with official sources.
-          </p>
+      <footer className="border-t border-white/10 bg-[#050505] pt-16 pb-10 text-sm text-white/60">
+        <div className="mx-auto max-w-7xl px-6">
+          {/* Top Brand Section */}
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-y-10 pb-10 border-b border-white/10">
+            {/* Brand + Description */}
+            <div className="max-w-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <img src="/favicon.ico" alt="MarvelVerse Logo" className="h-9 w-9 rounded-xl ring-1 ring-white/10" />
+                <div>
+                  <div className="font-semibold tracking-[-0.5px] text-xl text-white">MARVELVERSE</div>
+                  <div className="text-[9px] -mt-1 text-[#c5a46e] tracking-[3px]">TIMELINE</div>
+                </div>
+              </div>
+              <p className="text-xs leading-relaxed text-white/70 pr-2">
+                A premium fan-made MCU timeline experience.<br />
+                Explore the complete chronological order of the Marvel Cinematic Universe in an elegant, immersive interface.
+              </p>
+            </div>
 
-          {/* Footer Links */}
-          <div className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs">
-            <Link href="/about" className="hover:text-white transition-colors">About</Link>
-            <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
-            <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+            {/* Navigation Links */}
+            <div className="flex flex-col sm:flex-row gap-x-16 gap-y-8 text-xs">
+              <div>
+                <div className="uppercase tracking-[2.5px] text-[#c5a46e] text-[10px] mb-3">NAVIGATE</div>
+                <div className="flex flex-col gap-2.5">
+                  <Link href="/about" className="hover:text-white transition-colors">About</Link>
+                  <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
+                </div>
+              </div>
+              <div>
+                <div className="uppercase tracking-[2.5px] text-[#c5a46e] text-[10px] mb-3">LEGAL</div>
+                <div className="flex flex-col gap-2.5">
+                  <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+                  <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Copyright Disclaimer for AdSense compliance */}
-          <p className="mt-6 text-[10px] leading-relaxed text-white/40 max-w-sm mx-auto">
-            MarvelVerse is an unofficial fan-made MCU reference guide.<br />
-            Marvel, Marvel Studios, and all related characters, logos, artwork, and trademarks are property of Marvel Entertainment and The Walt Disney Company.<br />
-            This website is not affiliated with, endorsed by, or sponsored by Marvel Studios or Disney.
-          </p>
+          {/* Middle: Disclaimer + Developer Credit */}
+          <div className="py-8 border-b border-white/10">
+            {/* Disclaimer */}
+            <p className="text-[10px] leading-relaxed text-white/40 max-w-2xl">
+              MarvelVerse is an unofficial fan-made MCU reference guide.<br />
+              Marvel, Marvel Studios, and all related characters, logos, artwork, and trademarks are property of Marvel Entertainment and The Walt Disney Company.<br />
+              This website is not affiliated with, endorsed by, or sponsored by Marvel Studios or Disney.
+            </p>
+
+            {/* Developer Credit - Gold accent, professional signature */}
+            <div className="mt-5 text-xs">
+              Developed by <a 
+                href="https://in.linkedin.com/in/subhadip-shil-867aaa255" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-[#c5a46e] hover:text-[#e8b923] underline decoration-[#c5a46e]/50 hover:decoration-[#e8b923] transition-colors"
+              >
+                Subhadip Shil
+              </a>
+            </div>
+          </div>
+
+          {/* Bottom: Copyright + Subtle Red Glow Accent */}
+          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-y-2 text-[10px] tracking-widest text-white/40">
+            <div>© {new Date().getFullYear()} MARVELVERSE — ALL RIGHTS RESERVED</div>
+            <div className="flex items-center gap-2">
+              CRAFTED WITH OBSESSION
+              <span className="inline-block w-1.5 h-px bg-[#c8102e]/60" />
+            </div>
+          </div>
         </div>
 
-        <div className="mt-12 text-[10px] tracking-widest">© {new Date().getFullYear()} — CRAFTED WITH OBSESSION</div>
+        {/* Subtle ambient red glow line at very bottom for cinematic close */}
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-[#c8102e]/20 to-transparent mt-8" />
       </footer>
 
       {/* Random Movie Floating Action Button */}
