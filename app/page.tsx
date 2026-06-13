@@ -691,7 +691,7 @@ export default function MarvelverseTimeline() {
           Full-width horizontal layout, below featured and above timeline.
           EXCLUDED from all scroll animations and layout transforms.
           Do not wrap in motion, do not add special classes for docking/sidebar. */}
-      <div className="mx-auto max-w-[1400px] px-6 mt-10 pb-16">
+      <div className="mx-auto px-6 mt-10 pb-16">
         <FilterSystem
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
