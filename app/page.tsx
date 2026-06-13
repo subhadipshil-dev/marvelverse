@@ -114,6 +114,19 @@ const posterVariants = {
   }
 };
 
+const HERO_MOVIE_IDS = [
+  "avengers-endgame",
+  "avengers-infinity-war",
+  "spider-man-no-way-home",
+  "black-panther",
+  "captain-america-civil-war",
+  "guardians-vol-3",
+  "iron-man",
+] as const;
+
+const HERO_ROTATION_MS = 5000;
+const HERO_FADE_DURATION = 0.5;
+
 // Main Page
 export default function MarvelverseTimeline() {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
@@ -124,10 +137,21 @@ export default function MarvelverseTimeline() {
   const [minRating, setMinRating] = useState(0);
   const [sortBy, setSortBy] = useState<"timeline" | "rating" | "release" | "alpha">("timeline");
 
-  // Hero current movie state for dynamic hero
-  const [currentHeroMovie, setCurrentHeroMovie] = useState(
-    movies.find((m) => m.id === "avengers-endgame") || movies[0]
+  const heroMovies = useMemo(
+    () =>
+      HERO_MOVIE_IDS.map((id) => movies.find((movie) => movie.id === id)).filter(
+        (movie): movie is Movie => Boolean(movie)
+      ),
+    []
   );
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(
+    Math.max(
+      0,
+      heroMovies.findIndex((movie) => movie.id === "avengers-endgame")
+    )
+  );
+  const [isHeroCarouselPaused, setIsHeroCarouselPaused] = useState(false);
+  const currentHeroMovie = heroMovies[currentHeroIndex] || movies[0];
 
   const shouldReduceMotion = useReducedMotion();
 
@@ -161,6 +185,18 @@ export default function MarvelverseTimeline() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (shouldReduceMotion || isHeroCarouselPaused || heroMovies.length < 2) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      setCurrentHeroIndex((prev) => (prev + 1) % heroMovies.length);
+    }, HERO_ROTATION_MS);
+
+    return () => window.clearInterval(timer);
+  }, [heroMovies.length, isHeroCarouselPaused, shouldReduceMotion]);
 
   // Filtering + Searching
   const filteredMovies = useMemo(() => {
@@ -418,163 +454,157 @@ export default function MarvelverseTimeline() {
       {/* ============================================
           HERO — PREMIUM CINEMATIC EXPERIENCE
       ============================================ */}
-      <section className="relative h-[92vh] overflow-hidden border-b border-white/10">
-        {/* Dynamic Background with Ken Burns slow zoom and fade on change */}
-        <motion.div
-          key={currentHeroMovie.id}
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${currentHeroMovie.thumbnail})` }}
-          initial={shouldReduceMotion ? { opacity: 0.85 } : { opacity: 0, scale: 1.1 }}
-          animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
-          transition={{ duration: shouldReduceMotion ? 0.4 : 1.2, ease: "easeOut" }}
-        >
-          {/* Slow zoom animation layer - cinematic but skipped on reduced motion */}
-          {!shouldReduceMotion && (
-            <motion.div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url(${currentHeroMovie.thumbnail})` }}
-              animate={{ scale: [1, 1.08] }}
-              transition={{ duration: 25, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
-            />
-          )}
-        </motion.div>
+      <section className="relative h-[960px] overflow-hidden border-b border-white/10 sm:h-[980px] lg:h-[860px]">
+        {/* Dynamic Background crossfade */}
+        <AnimatePresence initial={false}>
+          <motion.div
+            key={currentHeroMovie.id}
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${currentHeroMovie.thumbnail})` }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: shouldReduceMotion ? 0.2 : HERO_FADE_DURATION, ease: "easeInOut" }}
+          />
+        </AnimatePresence>
 
-        {/* Cinematic dark gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/95 to-[#050505]/60" />
-        
-        {/* Red ambient lighting */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_40%,rgba(200,16,46,0.18),transparent_60%)]" />
+        {/* Cinematic overlays */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#040404] via-[#050505]/92 to-[#050505]/70" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(5,5,5,0.55)_72%,rgba(0,0,0,0.88)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_35%,rgba(200,16,46,0.18),transparent_55%)]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-black/30" />
 
         {/* Subtle particle field for cinematic feel */}
         <ParticleField />
 
-        <div className="relative z-10 h-full max-w-7xl mx-auto px-6 flex flex-col">
-          {/* Main content grid: Left info + Right poster */}
-          <div className="flex-1 flex flex-col lg:flex-row items-center justify-between gap-8 pt-12 pb-8">
-            {/* LEFT: Movie info - staggered reveal */}
-            <motion.div 
-              className="flex-1 max-w-2xl space-y-5"
+        <div className="relative z-10 mx-auto flex h-full max-w-7xl flex-col px-6">
+          <div className="grid flex-1 grid-rows-[1fr_auto] pt-10 pb-[214px] lg:pb-[198px]">
+            {/* Main content grid: Left info + Right poster */}
+            <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,620px)_340px] lg:gap-12">
+              {/* LEFT: Movie info */}
+              <div className="flex h-[540px] w-full max-w-[620px] flex-col justify-between">
+                <AnimatePresence initial={false} mode="wait">
+                  <motion.div
+                    key={currentHeroMovie.id}
+                    className="flex h-full flex-col"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: shouldReduceMotion ? 0.2 : HERO_FADE_DURATION, ease: "easeInOut" }}
+                  >
+                    <div className="flex h-8 items-center gap-3">
+                      <div className="inline-flex items-center rounded-full bg-[#c8102e]/90 px-4 py-1 text-xs font-semibold tracking-[2px] text-white">
+                        {currentHeroMovie.phase}
+                      </div>
+                      <div className="inline-flex items-center rounded-full border border-white/20 bg-white/5 px-4 py-1 text-xs font-medium tracking-[1px] text-white/90">
+                        {currentHeroMovie.timelineYear}
+                      </div>
+                    </div>
+
+                    <div className="mt-6 flex h-[112px] items-start md:h-[142px]">
+                      <h1 className="line-clamp-2 text-5xl font-semibold leading-[0.95] tracking-[-2.5px] text-white md:text-7xl">
+                        {currentHeroMovie.title}
+                      </h1>
+                    </div>
+
+                    <div className="mt-5 flex h-6 items-center gap-6 text-sm text-white/70">
+                      <div className="flex items-center gap-1.5 font-semibold text-[#c5a46e]">
+                        <Star className="h-4 w-4 fill-current" /> {currentHeroMovie.imdbRating} IMDb
+                      </div>
+                      <div>{currentHeroMovie.runtime}</div>
+                      <div>{currentHeroMovie.releaseYear}</div>
+                    </div>
+
+                    <div className="mt-5 h-[72px] max-w-xl">
+                      <p className="line-clamp-3 text-[15px] leading-6 text-white/80">
+                        {currentHeroMovie.synopsis}
+                      </p>
+                    </div>
+
+                    <div className="mt-5 h-[74px]">
+                      <div className="mb-2 text-xs uppercase tracking-[2px] text-white/40">Available on</div>
+                      <div className="flex h-[48px] flex-wrap content-start gap-2 overflow-hidden">
+                        {currentHeroMovie.ottPlatforms.map((platform) => (
+                          <div key={platform} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs">
+                            <PlatformLogo name={platform} className="h-3.5 w-3.5" />
+                            <span className="text-white/80">{platform}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="mt-auto flex h-[60px] flex-wrap items-end gap-4 pt-8">
+                      <button
+                        onClick={() => openMovie(currentHeroMovie)}
+                        className="btn btn-primary px-8 py-3.5 text-base"
+                      >
+                        EXPLORE MOVIE
+                      </button>
+                      <button
+                        onClick={scrollToTimeline}
+                        className="btn btn-secondary border-white/20 px-8 py-3.5 text-base"
+                      >
+                        VIEW TIMELINE POSITION
+                      </button>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* RIGHT: Large featured poster */}
+              <div className="relative mx-auto flex h-[360px] w-[240px] flex-shrink-0 items-center justify-center sm:h-[420px] sm:w-[280px] lg:mx-0 lg:h-[510px] lg:w-[340px]">
+                <div className="absolute -inset-8 rounded-full bg-[#c8102e] opacity-20 blur-[60px]" />
+                <div className="relative h-full w-full overflow-hidden rounded-3xl border border-white/10 bg-black shadow-[0_30px_80px_-15px_rgb(0,0,0,0.8)]">
+                  <AnimatePresence initial={false}>
+                    <motion.div
+                      key={currentHeroMovie.id}
+                      className="absolute inset-0"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: shouldReduceMotion ? 0.2 : HERO_FADE_DURATION, ease: "easeInOut" }}
+                    >
+                      <img
+                        src={currentHeroMovie.thumbnail}
+                        alt={currentHeroMovie.title}
+                        className="h-full w-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent" />
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              </div>
+            </div>
+
+            {/* Redesigned Top Stats as glass cards below title area - staggered on load */}
+            <motion.div
+              className="pt-8"
               variants={staggerContainer}
               initial="hidden"
               animate="visible"
             >
-              {/* Badges - staggered */}
-              <motion.div variants={textVariants} className="flex flex-wrap gap-3">
-                <div className="inline-flex items-center rounded-full bg-[#c8102e]/90 px-4 py-1 text-xs font-semibold tracking-[2px] text-white">
-                  {currentHeroMovie.phase}
-                </div>
-                <div className="inline-flex items-center rounded-full border border-white/20 bg-white/5 px-4 py-1 text-xs font-medium tracking-[1px] text-white/90">
-                  {currentHeroMovie.timelineYear}
-                </div>
-              </motion.div>
-
-              {/* Large Title - staggered reveal */}
-              <motion.h1 
-                variants={textVariants}
-                className="text-5xl md:text-7xl font-semibold tracking-[-2.5px] leading-[0.95] text-white"
-              >
-                {currentHeroMovie.title}
-              </motion.h1>
-
-              {/* Meta row */}
-              <motion.div variants={textVariants} className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/70">
-                <div className="flex items-center gap-1.5 text-[#c5a46e] font-semibold">
-                  <Star className="h-4 w-4 fill-current" /> {currentHeroMovie.imdbRating} IMDb
-                </div>
-                <div>{currentHeroMovie.runtime}</div>
-                <div>{currentHeroMovie.releaseYear}</div>
-              </motion.div>
-
-              {/* Synopsis */}
-              <motion.p 
-                variants={textVariants}
-                className="max-w-xl text-[15px] leading-relaxed text-white/80 line-clamp-4"
-              >
-                {currentHeroMovie.synopsis}
-              </motion.p>
-
-              {/* Available Platforms */}
-              <motion.div variants={textVariants}>
-                <div className="text-xs uppercase tracking-[2px] text-white/40 mb-2">Available on</div>
-                <div className="flex flex-wrap gap-2">
-                  {currentHeroMovie.ottPlatforms.map((platform) => (
-                    <div key={platform} className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs">
-                      <PlatformLogo name={platform} className="h-3.5 w-3.5" />
-                      <span className="text-white/80">{platform}</span>
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                {[
+                  { label: "MOVIES", value: totalMovies },
+                  { label: "AVG RATING", value: parseFloat(avgRating) },
+                  { label: "PHASES", value: totalPhases },
+                  { label: "PLATFORMS", value: platformsCount },
+                ].map((stat, i) => (
+                  <motion.div
+                    key={i}
+                    variants={cardVariants}
+                    className="glass rounded-2xl border border-white/10 p-5 flex items-center gap-4 cinematic-spotlight"
+                  >
+                    <div className="text-3xl font-semibold tracking-[-1px] text-white tabular-nums">
+                      <AnimatedCounter value={stat.value} />
                     </div>
-                  ))}
-                </div>
-              </motion.div>
-
-              {/* CTAs - soft spring entry */}
-              <motion.div variants={textVariants} className="flex flex-wrap gap-4 pt-2">
-                <button 
-                  onClick={() => openMovie(currentHeroMovie)} 
-                  className="btn btn-primary px-8 py-3.5 text-base"
-                >
-                  EXPLORE MOVIE
-                </button>
-                <button 
-                  onClick={scrollToTimeline} 
-                  className="btn btn-secondary px-8 py-3.5 text-base border-white/20"
-                >
-                  VIEW TIMELINE POSITION
-                </button>
-              </motion.div>
+                    <div className="text-xs uppercase tracking-[2px] text-white/50 leading-tight">{stat.label}</div>
+                  </motion.div>
+                ))}
+              </div>
             </motion.div>
-
-            {/* RIGHT: Large featured poster with float and glow */}
-            <div className="relative hidden lg:block flex-shrink-0">
-              {/* Glow behind poster */}
-              <div className="absolute -inset-8 bg-[#c8102e] opacity-20 blur-[60px] rounded-full" />
-              
-              <motion.div
-                key={currentHeroMovie.id}
-                className="relative w-[340px] aspect-[2/3] rounded-3xl overflow-hidden border border-white/10 shadow-[0_30px_80px_-15px_rgb(0,0,0,0.8)]"
-                initial={shouldReduceMotion ? { opacity: 0.9 } : { opacity: 0, x: 60, rotateY: 8 }}
-                animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, x: 0, rotateY: 0 }}
-                whileHover={shouldReduceMotion ? { scale: 1.01 } : { scale: 1.015, rotateY: -2 }}
-                transition={{ duration: shouldReduceMotion ? 0.35 : 0.7, ease: [0.23, 1, 0.32, 1] }}
-              >
-                <img 
-                  src={currentHeroMovie.thumbnail} 
-                  alt={currentHeroMovie.title} 
-                  className="h-full w-full object-cover"
-                />
-                {/* Cinematic inner shadow */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent" />
-              </motion.div>
-            </div>
           </div>
-
-          {/* Redesigned Top Stats as glass cards below title area - staggered on load */}
-          <motion.div 
-            className="pb-8"
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-          >
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {[
-                { label: "MOVIES", value: totalMovies },
-                { label: "AVG RATING", value: parseFloat(avgRating) },
-                { label: "PHASES", value: totalPhases },
-                { label: "PLATFORMS", value: platformsCount },
-              ].map((stat, i) => (
-                <motion.div 
-                  key={i} 
-                  variants={cardVariants}
-                  className="glass rounded-2xl border border-white/10 p-5 flex items-center gap-4 cinematic-spotlight"
-                >
-                  <div className="text-3xl font-semibold tracking-[-1px] text-white tabular-nums">
-                    <AnimatedCounter value={stat.value} />
-                  </div>
-                  <div className="text-xs uppercase tracking-[2px] text-white/50 leading-tight">{stat.label}</div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
         </div>
 
         {/* BOTTOM: Interactive Movie Carousel */}
@@ -582,29 +612,29 @@ export default function MarvelverseTimeline() {
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-xs uppercase tracking-[2.5px] text-white/40 mb-3">EXPLORE THE COLLECTION</div>
             <motion.div 
-              className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory"
+              className="flex flex-nowrap items-end gap-3 overflow-x-auto overflow-y-visible pb-3 scrollbar-hide snap-x snap-mandatory"
               variants={staggerContainer}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
+              onMouseEnter={() => setIsHeroCarouselPaused(true)}
+              onMouseLeave={() => setIsHeroCarouselPaused(false)}
             >
-              {movies.slice(0, 7).map((movie) => {
+              {heroMovies.map((movie, index) => {
                 const isActive = currentHeroMovie.id === movie.id;
                 return (
                   <motion.button
                     key={movie.id}
                     variants={cardVariants}
-                    onClick={() => setCurrentHeroMovie(movie)}
+                    onClick={() => setCurrentHeroIndex(index)}
                     className={cn(
-                      "flex-shrink-0 snap-start rounded-2xl overflow-hidden border transition-all duration-300",
-                      isActive 
-                        ? "border-[#c8102e] w-28 md:w-32 ring-1 ring-[#c8102e]/40" 
-                        : "border-white/10 w-20 md:w-24 opacity-70 hover:opacity-100"
+                      "flex-shrink-0 snap-start w-[96px] md:w-[112px] rounded-2xl overflow-hidden border bg-black/20 transition-all duration-300 transform-gpu",
+                      isActive
+                        ? "-translate-y-[6px] border-[#c8102e] shadow-[0_0_24px_rgba(200,16,46,0.3)] ring-1 ring-[#c8102e]/40 z-10"
+                        : "border-white/10 opacity-70 hover:opacity-100"
                     )}
-                    whileHover={{ scale: isActive ? 1.02 : 1.05 }}
-                    whileTap={{ scale: 0.98 }}
                   >
-                    <div className="relative aspect-[2/3]">
+                    <div className="relative aspect-[2/3] w-full">
                       <img 
                         src={movie.thumbnail} 
                         alt={movie.title} 
@@ -614,11 +644,9 @@ export default function MarvelverseTimeline() {
                         <div className="absolute inset-0 bg-gradient-to-t from-[#c8102e]/30 to-transparent" />
                       )}
                     </div>
-                    {isActive && (
-                      <div className="px-2 py-1 text-[10px] text-center text-white/90 truncate bg-black/50">
-                        {movie.title.split(":")[0]}
-                      </div>
-                    )}
+                    <div className="flex h-6 items-center px-2 text-[10px] leading-6 text-center text-white/90 bg-black/50">
+                      <span className="block w-full truncate">{movie.title.split(":")[0]}</span>
+                    </div>
                   </motion.button>
                 );
               })}
