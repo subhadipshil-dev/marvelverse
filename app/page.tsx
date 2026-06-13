@@ -120,11 +120,9 @@ const HERO_MOVIE_IDS = [
   "spider-man-no-way-home",
   "black-panther",
   "captain-america-civil-war",
-  "guardians-vol-3",
-  "iron-man",
 ] as const;
 
-const HERO_ROTATION_MS = 5000;
+const HERO_ROTATION_MS = 4000;
 const HERO_FADE_DURATION = 0.5;
 
 // Main Page
@@ -150,7 +148,8 @@ export default function MarvelverseTimeline() {
       heroMovies.findIndex((movie) => movie.id === "avengers-endgame")
     )
   );
-  const [isHeroCarouselPaused, setIsHeroCarouselPaused] = useState(false);
+  const [isHeroHovered, setIsHeroHovered] = useState(false);
+  const [isHeroCarouselHovered, setIsHeroCarouselHovered] = useState(false);
   const currentHeroMovie = heroMovies[currentHeroIndex] || movies[0];
 
   const shouldReduceMotion = useReducedMotion();
@@ -187,16 +186,16 @@ export default function MarvelverseTimeline() {
   }, []);
 
   useEffect(() => {
-    if (shouldReduceMotion || isHeroCarouselPaused || heroMovies.length < 2) {
+    if (shouldReduceMotion || isHeroHovered || isHeroCarouselHovered || heroMovies.length < 2) {
       return;
     }
 
-    const timer = window.setInterval(() => {
+    const timer = window.setTimeout(() => {
       setCurrentHeroIndex((prev) => (prev + 1) % heroMovies.length);
     }, HERO_ROTATION_MS);
 
-    return () => window.clearInterval(timer);
-  }, [heroMovies.length, isHeroCarouselPaused, shouldReduceMotion]);
+    return () => window.clearTimeout(timer);
+  }, [currentHeroIndex, heroMovies.length, isHeroCarouselHovered, isHeroHovered, shouldReduceMotion]);
 
   // Filtering + Searching
   const filteredMovies = useMemo(() => {
@@ -247,9 +246,6 @@ export default function MarvelverseTimeline() {
 
   // Stats
   const totalMovies = movies.length;
-  const avgRating = (movies.reduce((sum, m) => sum + m.imdbRating, 0) / totalMovies).toFixed(1);
-  const totalPhases = phasesData.length;
-  const platformsCount = platformsData.length;
 
   // Timeline progress (approximate visual)
   const timelineProgress = Math.min(100, Math.floor((filteredMovies.length / totalMovies) * 100));
@@ -454,7 +450,11 @@ export default function MarvelverseTimeline() {
       {/* ============================================
           HERO — PREMIUM CINEMATIC EXPERIENCE
       ============================================ */}
-      <section className="relative h-[960px] overflow-hidden border-b border-white/10 sm:h-[980px] lg:h-[860px]">
+      <section
+        className="relative h-[760px] overflow-hidden border-b border-white/10 sm:h-[820px] lg:h-[860px]"
+        onMouseEnter={() => setIsHeroHovered(true)}
+        onMouseLeave={() => setIsHeroHovered(false)}
+      >
         {/* Dynamic Background crossfade */}
         <AnimatePresence initial={false}>
           <motion.div
@@ -478,11 +478,11 @@ export default function MarvelverseTimeline() {
         <ParticleField />
 
         <div className="relative z-10 mx-auto flex h-full max-w-7xl flex-col px-6">
-          <div className="grid flex-1 grid-rows-[1fr_auto] pt-10 pb-[214px] lg:pb-[198px]">
+          <div className="grid flex-1 grid-rows-[1fr_auto] pt-10 pb-8">
             {/* Main content grid: Left info + Right poster */}
             <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,620px)_340px] lg:gap-12">
               {/* LEFT: Movie info */}
-              <div className="flex h-[540px] w-full max-w-[620px] flex-col justify-between">
+              <div className="flex h-[440px] w-full max-w-[620px] flex-col justify-between sm:h-[470px] lg:h-[500px]">
                 <AnimatePresence initial={false} mode="wait">
                   <motion.div
                     key={currentHeroMovie.id}
@@ -567,7 +567,7 @@ export default function MarvelverseTimeline() {
                       <img
                         src={currentHeroMovie.thumbnail}
                         alt={currentHeroMovie.title}
-                        className="h-full w-full object-cover"
+                        className="h-full w-full object-contain object-center"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                       <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent" />
@@ -577,80 +577,48 @@ export default function MarvelverseTimeline() {
               </div>
             </div>
 
-            {/* Redesigned Top Stats as glass cards below title area - staggered on load */}
-            <motion.div
-              className="pt-8"
-              variants={staggerContainer}
-              initial="hidden"
-              animate="visible"
-            >
-              <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-                {[
-                  { label: "MOVIES", value: totalMovies },
-                  { label: "AVG RATING", value: parseFloat(avgRating) },
-                  { label: "PHASES", value: totalPhases },
-                  { label: "PLATFORMS", value: platformsCount },
-                ].map((stat, i) => (
-                  <motion.div
-                    key={i}
-                    variants={cardVariants}
-                    className="glass rounded-2xl border border-white/10 p-5 flex items-center gap-4 cinematic-spotlight"
-                  >
-                    <div className="text-3xl font-semibold tracking-[-1px] text-white tabular-nums">
-                      <AnimatedCounter value={stat.value} />
-                    </div>
-                    <div className="text-xs uppercase tracking-[2px] text-white/50 leading-tight">{stat.label}</div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* BOTTOM: Interactive Movie Carousel */}
-        <div className="absolute bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-[#050505] via-[#050505]/95 to-transparent pt-12 pb-6">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="text-xs uppercase tracking-[2.5px] text-white/40 mb-3">EXPLORE THE COLLECTION</div>
-            <motion.div 
-              className="flex flex-nowrap items-end gap-3 overflow-x-auto overflow-y-visible pb-3 scrollbar-hide snap-x snap-mandatory"
-              variants={staggerContainer}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
-              onMouseEnter={() => setIsHeroCarouselPaused(true)}
-              onMouseLeave={() => setIsHeroCarouselPaused(false)}
-            >
-              {heroMovies.map((movie, index) => {
-                const isActive = currentHeroMovie.id === movie.id;
-                return (
-                  <motion.button
-                    key={movie.id}
-                    variants={cardVariants}
-                    onClick={() => setCurrentHeroIndex(index)}
-                    className={cn(
-                      "flex-shrink-0 snap-start w-[96px] md:w-[112px] rounded-2xl overflow-hidden border bg-black/20 transition-all duration-300 transform-gpu",
-                      isActive
-                        ? "-translate-y-[6px] border-[#c8102e] shadow-[0_0_24px_rgba(200,16,46,0.3)] ring-1 ring-[#c8102e]/40 z-10"
-                        : "border-white/10 opacity-70 hover:opacity-100"
-                    )}
-                  >
-                    <div className="relative aspect-[2/3] w-full">
-                      <img 
-                        src={movie.thumbnail} 
-                        alt={movie.title} 
-                        className="absolute inset-0 h-full w-full object-cover" 
-                      />
-                      {isActive && (
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#c8102e]/30 to-transparent" />
-                      )}
-                    </div>
-                    <div className="flex h-6 items-center px-2 text-[10px] leading-6 text-center text-white/90 bg-black/50">
-                      <span className="block w-full truncate">{movie.title.split(":")[0]}</span>
-                    </div>
-                  </motion.button>
-                );
-              })}
-            </motion.div>
+            <div className="mt-8">
+              <div className="mb-5 text-xs uppercase tracking-[2.5px] text-white/40">EXPLORE THE COLLECTION</div>
+              <AnimatePresence initial={false} mode="wait">
+                <motion.div
+                  key={currentHeroMovie.id}
+                  className="mx-auto flex w-max items-end gap-[14px]"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: shouldReduceMotion ? 0.2 : HERO_FADE_DURATION, ease: "easeInOut" }}
+                  onMouseEnter={() => setIsHeroCarouselHovered(true)}
+                  onMouseLeave={() => setIsHeroCarouselHovered(false)}
+                >
+                  {heroMovies.map((movie, index) => {
+                    const isActive = currentHeroMovie.id === movie.id;
+                    return (
+                    <button
+                      key={movie.id}
+                      onClick={() => setCurrentHeroIndex(index)}
+                      className={cn(
+                        "flex h-[174px] w-[112px] flex-shrink-0 flex-col overflow-hidden rounded-2xl border bg-black/30 transition-all duration-300",
+                        isActive
+                          ? "-translate-y-[6px] border-[#c8102e] shadow-[0_0_24px_rgba(200,16,46,0.3)] ring-1 ring-[#c8102e]/40"
+                          : "border-white/10"
+                        )}
+                      >
+                        <div className="flex h-[144px] items-center justify-center bg-black">
+                          <img
+                            src={movie.thumbnail}
+                            alt={movie.title}
+                            className="h-full w-full object-contain object-center"
+                          />
+                        </div>
+                        <div className="flex h-[30px] items-center bg-black/60 px-2 text-[10px] leading-4 text-white/90">
+                          <span className="block w-full truncate text-center">{movie.title.split(":")[0]}</span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
         </div>
       </section>
